@@ -6,7 +6,7 @@ do
     ---@class Observer
     ---@field subscribe fun(obj: Observer, subscriber: function)
     ---@field unsubscribe fun(obj: Observer, subscriber: function)
-    ---@field publish fun(obj: Observer,...)
+    ---@field emit fun(obj: Observer,...)
     ---@field notify fun(obj: Observer)
     ---@overload fun():Observer
     Observer = Observer or {} ---@type Observer
@@ -19,7 +19,7 @@ do
 
     ---@param cls Observer
     function Observer.init(cls)
-        cls.publish_callback = function(sub,...) sub(...) end
+        cls.emit_callback = function(sub,...) sub(...) end
         cls.notify_callback  = function(sub) sub() end
         return cls
     end
@@ -52,8 +52,8 @@ do
     end
 
     -- публикация подписчикам
-    function Observer:publish(...)
-        self.subscribers:each(self.publish_callback,...)
+    function Observer:emit(...)
+        self.subscribers:each(self.emit_callback,...)
     end
     
     -- раздача копий подписчикам
