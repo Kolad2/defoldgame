@@ -2,7 +2,7 @@
 
 This project was created from the "empty" project template.
 
-The settings in ["game.project"](defold://open?path=/game.project) are all the default. A bootstrap empty ["main.collection"](defold://open?path=/main/main.collection) is included.
+The settings in ["game.project"](defold://open?path=/game.project) are all the default. A bootstrap empty ["main.collection"](defold://open?path=/scripts/main.collection) is included.
 
 Check out [the documentation pages](https://defold.com/learn) for examples, tutorials, manuals and API docs.
 
@@ -11,3 +11,27 @@ If you run into trouble, help is available in [our forum](https://forum.defold.c
 Happy Defolding!
 
 ---# defoldgame
+
+## Расстановка персонажа в коллекции
+
+Открой `scripts/main.collection` в Defold в режиме 2D (вид спереди,
+ортографическая проекция). В коллекции отображается настоящая 3D-модель
+в игровом масштабе и изометрическом ракурсе. Выбери объект `character`
+в Outline и перемещай его по фону в плоскости XY.
+
+Позиция объекта в коллекции задаётся в пикселях изображения: X вправо,
+Y вверх, начало координат в левом нижнем углу фона. Исходная позиция —
+X = 950, Y = 390. Сохраняй Z = 0, масштаб (110, 110, 110) и нулевое вращение
+объекта; размещай его на корневом уровне коллекции, как в примере.
+
+Позиция объекта при запуске не меняется. И редактор, и игровой рендер
+используют общее пространство сцены: X вправо, Y вверх, Z к наблюдателю.
+Фон расположен в (960, 540, -1000), за моделями. Поворот компонента `model`
+и масштаб объекта 110 задают изометрический вид; они одинаковы в редакторе
+и игре. Это объёмная анимированная модель, а не изображение или маркер.
+
+Расчёт скорости и направления движения остаётся в условном мире XZ
+(метры). `isometric.lua` переводит координаты между ним и сценой;
+вертикальная ось поворота персонажа также переведена в пространство сцены.
+При изменении масштаба модели согласуй его с `pixels_per_unit`.
+Редактор показывает начальную позу; анимация ходьбы выполняется в игре.

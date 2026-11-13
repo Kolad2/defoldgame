@@ -1,0 +1,16 @@
+name: "main"
+scale_along_z: 1
+instances {
+ id: "location"
+ prototype: "/scripts/location.go"
+ position { x: 960 y: 540 z: -1000 }
+ rotation { x: 0 y: 0 z: 0 w: 1 }
+ scale3 { x: 1 y: 1 z: 1 }
+}
+instances {
+ id: "character"
+ prototype: "/scripts/character.go"
+ position { x: 950 y: 390 z: 0 }
+ rotation { x: 0 y: 0 z: 0 w: 1 }
+ scale3 { x: 110 y: 110 z: 110 }
+}
