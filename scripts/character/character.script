@@ -76,6 +76,6 @@ function on_input(self, action_id, action)
         if px and py and px>=vx and px<=vx+vw and py>=vy and py<=vy+vh then
             self.target=iso.clamp_to_map(iso.to_world((px-vx)*iso.width/vw, (py-vy)*iso.height/vh))
         end
-        -- Let game.script receive this press as well.
+        -- Let main.script receive this press as well.
     end
 end

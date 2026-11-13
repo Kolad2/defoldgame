@@ -3,9 +3,16 @@ local TOUCH = hash("touch")
 
 ---@class GameInput
 ---@field pressed Observer
-local GameInput = {
-    pressed = Observer:create()
-}
+local GameInput = {}
+GameInput.__index = GameInput
+
+---@return GameInput
+function GameInput:create()
+    local obj = setmetatable({
+        pressed = Observer:create()
+    }, self)
+    return obj
+end
 
 --- Publishes the Defold action on a mouse press or single touch.
 ---@param action_id hash|nil
