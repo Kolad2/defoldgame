@@ -1,3 +1,13 @@
+local Character = require "scripts.character.character"
+
 function init(self)
-    
+    self.char = Character:create()
+end
+
+function update(self, dt)
+    self.char:update(dt)
+end
+
+function on_input(self)
+
 end

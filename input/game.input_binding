@@ -1,8 +1,4 @@
 mouse_trigger { input: MOUSE_BUTTON_1 action: "touch" }
-key_trigger { input: KEY_A action: "left_wasd" }
-key_trigger { input: KEY_D action: "right_wasd" }
-key_trigger { input: KEY_W action: "up_wasd" }
-key_trigger { input: KEY_S action: "down_wasd" }
 key_trigger { input: KEY_LEFT action: "left" }
 key_trigger { input: KEY_RIGHT action: "right" }
 key_trigger { input: KEY_UP action: "up" }
