@@ -146,7 +146,18 @@ do
     ---@return set
     function set:create(tbl)
         tbl = tbl or {} ---@type set
-        tbl, tbl.__index_dict = table.unique(tbl)
+        local index_dict = dict()
+        local i = 1
+        while i <= #tbl do
+            local item = tbl[i]
+            if not index_dict:has(item) then
+                index_dict:set(item, i)
+                i = i + 1
+            else
+                table.remove_swap(tbl, i)
+            end
+        end
+        tbl.__index_dict = index_dict
         return setmetatable(tbl, self.object_meta)
     end
 

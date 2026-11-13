@@ -31,19 +31,8 @@ do
         return tbl
     end
 
-    ---unpack
-    ---@param tbl table
-    ---@param start_pos number
-    ---@param end_pos number
-    ---@return table
-    table.unpack = table.unpack or
-    function(tbl, start_pos, end_pos)
-        start_pos = start_pos or 1
-        end_pos = end_pos or #tbl
-        if start_pos <= end_pos then
-            return tbl[start_pos], table.unpack(tbl, start_pos + 1, end_pos)
-        end
-    end
+
+    table.unpack = table.unpack or require("scripts.tools.table.unpack")
 
     ---pack
     ---@return table
@@ -52,28 +41,11 @@ do
         return { ... }
     end
 
-    ---tostring
-    ---@param tbl table
-    ---@return table
-    table.tostring = table.tostring or
-    function(tbl)
-        if getmetatable(tbl) and getmetatable(tbl).__tostring then return tostring(tbl) end
-        if tbl == nil then return tostring(nil) end
-        if type(tbl) ~= "table" then return tostring(tbl) end
-        local str = "{"
-        if #tbl == 0 then return str .. "}" end
-        if #tbl == 1 then return str .. table.tostring(tbl[1]) .. "}" end
-        str = str .. table.tostring(tbl[1])
-        for i=2, #tbl do
-            str = str .. "," .. table.tostring(tbl[i])
-        end
-        str = str .. "}"
-        return str
-    end
+    table.tostring = table.tostring or require("scripts.tools.table.tostring")
 
     ---remove
     ---@param tbl table
-    ---@param tbl number|nil
+    ---@param idx number|nil
     ---@return any
     table.remove = table.remove or function(tbl, idx)
         idx = idx or #tbl
@@ -110,6 +82,7 @@ do
             local j = math.random(1, i)
             tbl[i], tbl[j] = tbl[j], tbl[i]
         end
+        return tbl
     end
 
     ---reverse
@@ -117,11 +90,12 @@ do
     ---@return table
     table.reverse = table.reverse or
     function(tbl)
-        if #tbl <= 1 then return end
+        if #tbl <= 1 then return tbl end
         local n = math.floor(#tbl/2)
         for i=1, n do
             tbl[i], tbl[#tbl-i+1] = tbl[#tbl-i+1], tbl[i]
         end
+        return tbl
     end
 
     ---sum
@@ -151,23 +125,26 @@ do
     end
 
     ---max
-    ---@param tbl table
-    ---@return table
-    table.max =
-    function(tbl)
+    ---@generic T
+    ---@param tbl T[]
+    ---@return T|nil
+    table.max = function(tbl)
         local len = #tbl
         if len == 0 then return nil end
-        if len == 1 then return tbl[1] end
+
         local max = tbl[1]
-        for i=2, #tbl do
-            if tbl[i] > max then max = tbl[i] end
+        for i = 2, len do
+            if tbl[i] > max then
+                max = tbl[i]
+            end
         end
         return max
     end
 
     ---min
-    ---@param tbl table
-    ---@return table
+    ---@generic T
+    ---@param tbl T[]
+    ---@return T|nil
     table.min =
     function(tbl)
         local len = #tbl
@@ -181,8 +158,9 @@ do
     end
 
     ---argmax
-    ---@param tbl table
-    ---@return table
+    ---@generic T
+    ---@param tbl T[]
+    ---@return T|nil
     table.argmax =
     function(tbl)
         local len = #tbl
@@ -196,8 +174,9 @@ do
     end
 
     ---argmin
-    ---@param tbl table
-    ---@return table
+    ---@generic T
+    ---@param tbl T[]
+    ---@return T|nil
     table.argmin =
     function(tbl)
         local len = #tbl
@@ -298,33 +277,9 @@ do
         return map
     end
     --------------------------------------------
-
-    ---copy
-    ---@param tbl table
-    ---@return table
-    table.copy = table.copy or
-    function(tbl, callback)
-        callback = callback or function(value) return value end
-        local tbl_copy = table.map(tbl, callback)
-        return setmetatable(tbl_copy, getmetatable(tbl))
-    end
     
-    
-    ---deepcopy
-    ---@param tbl table
-    ---@return table
-    table.deepcopy = table.deepcopy or
-    function(tbl)
-        return table.copy(tbl, function(value)
-            if type(value) == "table" then
-                local meta = getmetatable(tbl)
-                local deepcopy = meta and meta.__deepcopy or table.deepcopy
-                return deepcopy(value)
-            else
-                return value
-            end
-        end)
-    end
+    table.copy = table.copy or require("scripts.tools.table.copy")
+    table.deepcopy = table.deepcopy or require("scripts.tools.table.deepcopy")
 
 
     ---is_sorted
@@ -341,10 +296,12 @@ do
     end
 
     ---move
+    ---@overload fun(tbl:table, pos_start:integer, pos_end:integer):table
+    ---@overload fun(tbl:table, pos_start:integer, pos_end:integer, pos_to:integer):table
     ---@param tbl table
-    ---@param pos_start number
-    ---@param pos_end number
-    ---@param pos_to number
+    ---@param pos_start integer
+    ---@param pos_end integer
+    ---@param pos_to integer
     ---@param tbl_to table
     ---@return table
     table.move =
@@ -367,9 +324,9 @@ do
 
     ---fill
     ---@param tbl table
-    ---@param value number|function
-    ---@param pos_start number|nil
-    ---@param pos_end number|nil
+    ---@param value number|(fun(index:integer):any)
+    ---@param pos_start? integer
+    ---@param pos_end? integer
     table.fill =
     function(tbl, value, pos_start, pos_end)
         pos_start = pos_start or 1
@@ -415,9 +372,12 @@ do
     end
 
 
+    ---@return table|nil meta
     table.get_meta_compatible =
     function(tbl,...)
+        ---@type table[]
         local tbls = {tbl, ...}
+
         if #tbls == 1 then tbls = {table.unpack(tbl)} end
         
         local meta = getmetatable(tbls[1])
@@ -426,22 +386,28 @@ do
             local compare_meta = getmetatable(tbls[i]) or meta
             if meta ~= compare_meta then
                 print("Ошибка: метатаблицы не совместимы")
-                return false
+                return nil
             end
         end
         return meta or getmetatable(tbl)
     end
 
 
+    ---@param tbl table|nil
+    ---@return table|nil
     table.merge = function(tbl, ...)
         if tbl == nil then return nil end
-        -- try to set common metatable
-        local meta = table.get_meta_compatible(tbl,...)
-        if meta == false then return nil end
-        local merge = setmetatable({}, meta)
-        --
         local tbls = {tbl, ...}
         if #tbls == 1 then tbls = tbl end
+        -- try to set common metatable
+        local meta = table.get_meta_compatible(tbl,...)
+        if meta == nil then
+            -- No metatables is valid; existing incompatible ones are not.
+            for i = 1, #tbls do
+                if getmetatable(tbls[i]) ~= nil then return nil end
+            end
+        end
+        local merge = setmetatable({}, meta)
         --
         local k = 1
         for i = 1, #tbls do
@@ -449,8 +415,8 @@ do
             if type(_tbl) == "table" then
                 table.move(_tbl, 1, #_tbl, k, merge)
                 k = k + #_tbl
-            elseif tbl then
-                merge[k] = tbl
+            else
+                merge[k] = _tbl
                 k = k + 1
             end
         end
@@ -462,7 +428,7 @@ do
     ---@overload fun(tbl:table, item:any):number|nil
     ---@param tbl table
     ---@param item any
-    ---@param pos_start|nil
+    ---@param pos_start number|nil
     ---@return number|nil
     table.find_first = table.find_first or
     function(tbl, item, pos_start)

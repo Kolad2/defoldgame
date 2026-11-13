@@ -1,15 +1,16 @@
 ---@class (partial) tablelib
 ---@field find fun(tbl: table, value: any): table
 ---@field find_first fun(tbl: table, value: any, pos_start: number): table|nil
----@field get_meta_compatible fun(tbl:table,...):table
----@field merge fun(tbl:table,...):table
+---@field get_meta_compatible fun(tbl:table,...):table|nil
+---@field merge fun(tbl:table|nil,...):table|nil
 ---@field get_random fun(tbl:table):any
 ---@field get fun(tbl:table, idx:number):any
 ---@field empty fun():table
----@field fill fun(tbl:table, value:number, pos_start:number, pos_end:number):table
----@field move fun(tbl:table, pos_start:number, pos_end:number, tbl_to:number, pos_to:number):table
+---@field fill fun(tbl:table, value:number|(fun(index:integer):any), pos_start?:integer, pos_end?:integer)
+---@field move fun(tbl:table, pos_start:integer, pos_end:integer, pos_to?:integer, tbl_to?:table):table
 ---@field is_sorted fun(tbl:table):boolean
----@field copy fun(tbl:table):table
+---@field copy fun(tbl:table, callback?: fun(value:any):any):table
+---@field deepcopy fun(tbl:table):table
 ---@field slice fun(tbl:table, pos_start:number, pos_end:number):table
 ---@field multiply fun(tbl:table, value:number):table
 ---@field divide fun(tbl:table, value:number):table
