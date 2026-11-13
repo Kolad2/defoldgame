@@ -1,4 +1,4 @@
-local Character = require "scripts.character.character"
+local Character = require("scripts.character.character")
 
 function init(self)
     self.char = Character:create()

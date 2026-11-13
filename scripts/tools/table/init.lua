@@ -30,8 +30,11 @@
 ---@field pack fun(...):table
 ---@field unpack fun(tbl:table, start_pos:number, end_pos:number)
 ---@field insert fun(tbl:table, pos:number, value:number):table
-local table = table or {}
-table = require("scripts.tools.table.table")
+local table = require("scripts.tools.table.table")
+
+---@class (partial) tablelib
+---@field unique fun(tbl:table):table, dict
+table.unique = table.unique or require("scripts.tools.table.unique")
 
 return table
 

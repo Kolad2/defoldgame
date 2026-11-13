@@ -1,9 +1,11 @@
 do
-    local table = table
-    local dict = {}
+    --- первый уровнь расширения table
+    local table = require("scripts.tools.table.table")
+
     
     ---@class dict
-    ---@field create fun(self:dict)
+    ---@field private data table<any, any>
+    ---@field create fun(self:dict, tbl?:table):dict
     ---@field set fun(self:dict, key:any, item:any):void
     ---@field remove fun(self:dict, key:number|string):void
     ---@field has fun(self:dict, key:number|string):boolean
@@ -13,7 +15,7 @@ do
     ---@field values fun(self:dict): table
     ---@field size fun(self:dict): number
     ---@field clear fun(self:dict): void
-    dict = dict or {}
+    local dict = {}
 
 
     ---set
@@ -99,7 +101,7 @@ do
     function dict:create(tbl)
         local obj = {
             data = tbl or {}
-        } ---@type dict
+        }
         return setmetatable(obj, self.__meta)
     end
 
