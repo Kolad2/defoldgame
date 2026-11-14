@@ -1,4 +1,5 @@
 local Observer = require("scripts.tools.observer")
+local UnitControllerPlayer = require("scripts.unit_controller.unit_controller_player")
 local TOUCH = hash("touch")
 
 ---@class GameInput
@@ -17,6 +18,11 @@ function GameInput:create(game)
     obj.game = game
     obj.clicked = Observer:create()
     return obj
+end
+
+---@return UnitControllerPlayer
+function GameInput:create_controller()
+    return UnitControllerPlayer:create(self)
 end
 
 --- Emit floor coordinates (x, y) on a mouse press or single touch.

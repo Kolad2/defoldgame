@@ -1,6 +1,6 @@
 ---@class Character
----@field id hash|nil
----@field controller UnitController|nil
+---@field id hash
+---@field controller UnitController
 local Character = {}
 Character.__index = Character
 
@@ -10,17 +10,13 @@ function Character:update(dt)
 
 end
 
----@return Character
-function Character:create()
-    local obj = setmetatable({}, self)
-    return obj
-end
-
 ---@param id hash
+---@param controller UnitController
 ---@return Character
-function Character:from_go(id)
-    local obj = self:create()
+function Character:create(id, controller)
+    local obj = setmetatable({}, self)
     obj.id = id
+    obj.controller = controller
     return obj
 end
 
