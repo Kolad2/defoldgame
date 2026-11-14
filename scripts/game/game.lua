@@ -10,9 +10,10 @@ local Game = {}
 
 function Game:init()
     self.camera = Camera:init()
-    self.input = GameInput:create()
+    self.input = GameInput:create(self)
 
-    self.char = Character:from_go(go.get_id("/character"))
+    local id = go.get_id("/character")
+    self.char = Character:from_go(id)
     msg.post(".", "acquire_input_focus")
 end
 

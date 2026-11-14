@@ -1,8 +1,8 @@
 ---@class Character
 ---@field id hash|nil
+---@field controller UnitController|nil
 local Character = {}
 Character.__index = Character
-
 
 
 ---@param dt number
