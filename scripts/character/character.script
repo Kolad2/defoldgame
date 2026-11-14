@@ -1,4 +1,4 @@
-local iso = require "scripts.isometric"
+local Camera = require "scripts.camera"
 local WALK = "Mixamo | Catwalk Walk Forward"
 local directions = {
     [hash("left")] = {-1, 0}, [hash("right")] = {1, 0},
@@ -32,16 +32,16 @@ function update(self, dt)
     local delta
     if sx ~= 0 or sy ~= 0 then
         self.target = nil
-        delta = iso.screen_direction(sx, sy)
+        delta = Camera.screen_direction(sx, sy)
     elseif self.target then
         delta = self.target-pos
     end
     if delta and vmath.length_sqr(delta) > 0.000001 then
         local distance = vmath.length(delta)
         local direction = delta/distance
-        local step = iso.speed*math.min(dt, 0.1)
+        local step = Camera.speed*math.min(dt, 0.1)
         if self.target then step = math.min(step, distance) end
-        local next_pos = iso.clamp_to_map(pos+direction*step)
+        local next_pos = Camera.clamp_to_map(pos+direction*step)
         local moved = vmath.length_sqr(next_pos-pos) > 0.0000001
         go.set_position(next_pos)
         if moved then
@@ -67,8 +67,8 @@ function on_input(self, action_id, action)
     if action_id == hash("touch") and action.pressed then
         local px,py = action.screen_x, action.screen_y
         if px and py then
-            local point = iso.to_world(px, py)
-            if point then self.target = iso.clamp_to_map(point) end
+            local point = Camera.to_world(px, py)
+            if point then self.target = Camera.clamp_to_map(point) end
         end
         -- Let main.script receive this press as well.
     end

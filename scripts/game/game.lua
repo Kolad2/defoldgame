@@ -1,13 +1,17 @@
 local GameInput = require("scripts.game_input.game_input")
 local Character = require("scripts.character.character")
+local Camera = require("scripts.camera")
 
 ---@class Game
 ---@field input GameInput
 ---@field char Character
+---@field camera Camera
 local Game = {}
 
 function Game:init()
+    self.camera = Camera:init()
     self.input = GameInput:create()
+
     self.char = Character:from_go(go.get_id("/character"))
     msg.post(".", "acquire_input_focus")
 end
