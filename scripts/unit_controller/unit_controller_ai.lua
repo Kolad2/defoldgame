@@ -1,3 +1,5 @@
+require("scripts.unit_controller.order.order")
+
 ---@class UnitControllerAI : UnitController
 local UnitControllerAI = {}
 UnitControllerAI.__index = UnitControllerAI
