@@ -1,7 +1,6 @@
 ---@class Camera
 local Camera = {}
 Camera.camera_url = "main:/camera#camera"
-Camera.speed = 2.5
 -- world.glb: a 20 x 20 plane at Y = 0. Leave room for the character at its edge.
 Camera.floor_y = 0
 Camera.floor_limit = 9.7
