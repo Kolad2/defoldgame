@@ -1,8 +1,5 @@
-local iso = require "scripts.isometric"
-
 function init(self)
     self.models = render.predicate({"model"})
-    self.background = render.predicate({"tile"})
 end
 
 function update(self)
@@ -10,17 +7,14 @@ function update(self)
     if w == 0 or h == 0 then return end
     render.set_viewport(0, 0, w, h)
     render.set_depth_mask(true)
-    render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = vmath.vector4(0.04, 0.05, 0.06, 1), [graphics.BUFFER_TYPE_DEPTH_BIT] = 1})
-    local x, y, vw, vh = iso.viewport(w, h)
-    render.set_viewport(x, y, vw, vh)
-    -- One shared scene space for both the background and actual 3D models.
-    -- This is the same front orthographic view used by the collection editor.
-    render.set_view(vmath.matrix4())
-    render.set_projection(vmath.matrix4_orthographic(0, iso.width, 0, iso.height, -2000, 2000))
+    render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = vmath.vector4(0.04, 0.05, 0.06, 1),
+        [graphics.BUFFER_TYPE_DEPTH_BIT] = 1})
+    render.set_camera("main:/camera#camera")
     render.enable_state(graphics.STATE_DEPTH_TEST)
+    render.set_depth_func(graphics.COMPARE_FUNC_LEQUAL)
     render.disable_state(graphics.STATE_CULL_FACE)
     render.enable_state(graphics.STATE_BLEND)
     render.set_blend_func(graphics.BLEND_FACTOR_ONE, graphics.BLEND_FACTOR_ONE_MINUS_SRC_ALPHA)
-    render.draw(self.background)
     render.draw(self.models)
+    render.set_camera()
 end

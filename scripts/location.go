@@ -1,1 +1,1 @@
-components { id: "background" component: "/assets/location/location.sprite" }
+components { id: "floor" component: "/assets/world/world.model" }

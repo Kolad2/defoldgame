@@ -17,7 +17,7 @@ function init(self)
     self.moving = false
     self.target = nil
     msg.post(".", "acquire_input_focus")
-    -- The collection and the game use the same scene coordinates and model pose.
+    -- The model stands upright in world space; the camera supplies the isometric view.
     model.play_anim("#model", WALK, go.PLAYBACK_LOOP_FORWARD, {playback_rate=0})
     print("ISOMETRIC_READY: arrows / click to move")
 end
@@ -28,13 +28,11 @@ function update(self, dt)
         local d = directions[key]
         sx, sy = sx+d[1], sy+d[2]
     end
-    local scene_pos = go.get_position()
-    -- Measure movement on the ground plane, then project back into the scene.
-    local pos = iso.to_world(scene_pos.x, scene_pos.y)
+    local pos = go.get_position()
     local delta
     if sx ~= 0 or sy ~= 0 then
         self.target = nil
-        delta = iso.to_world(iso.width/2+sx, iso.height/2+sy)
+        delta = iso.screen_direction(sx, sy)
     elseif self.target then
         delta = self.target-pos
     end
@@ -45,17 +43,15 @@ function update(self, dt)
         if self.target then step = math.min(step, distance) end
         local next_pos = iso.clamp_to_map(pos+direction*step)
         local moved = vmath.length_sqr(next_pos-pos) > 0.0000001
-        local image_x, image_y = iso.to_image(next_pos)
-        go.set_position(vmath.vector3(image_x, image_y, scene_pos.z))
+        go.set_position(next_pos)
         if moved then
-            go.set_rotation(iso.scene_rotation(math.atan2(-direction.x, -direction.z)))
+            go.set_rotation(vmath.quat_rotation_y(math.atan2(-direction.x, -direction.z)))
         end
         set_walking(self, moved)
         if self.target and distance <= step+0.001 then
             self.target = nil
             set_walking(self, false)
-            local x,y = iso.to_image(next_pos)
-            print("ISOMETRIC_ARRIVED", math.floor(x), math.floor(y))
+            print("ISOMETRIC_ARRIVED", next_pos.x, next_pos.z)
         end
     else
         set_walking(self, false)
@@ -69,12 +65,10 @@ function on_input(self, action_id, action)
         return true
     end
     if action_id == hash("touch") and action.pressed then
-        -- screen_x/y and window.get_size() both use physical window pixels.
-        local w,h = window.get_size()
-        local vx,vy,vw,vh = iso.viewport(w,h)
         local px,py = action.screen_x, action.screen_y
-        if px and py and px>=vx and px<=vx+vw and py>=vy and py<=vy+vh then
-            self.target=iso.clamp_to_map(iso.to_world((px-vx)*iso.width/vw, (py-vy)*iso.height/vh))
+        if px and py then
+            local point = iso.to_world(px, py)
+            if point then self.target = iso.clamp_to_map(point) end
         end
         -- Let main.script receive this press as well.
     end

@@ -1,39 +1,39 @@
 local M = {}
-M.width, M.height = 1920, 1080
-M.pixels_per_unit = 110
-M.speed = 1.25
-local r = math.sqrt(0.5)
-local u = 1 / math.sqrt(6)
+M.camera_url = "main:/camera#camera"
+M.speed = 2.5
+-- world.glb: a 20 x 20 plane at Y = 0. Leave room for the character at its edge.
+M.floor_y = 0
+M.floor_limit = 9.7
 
--- Game objects are placed directly in image/scene coordinates (XY pixels).
--- Ground-space XZ coordinates are used only for movement speed and direction.
--- The model stores the isometric rotation; the collection uses 110 px/unit scale.
-local scene_up = vmath.vector3(0, math.sqrt(2/3), 1/math.sqrt(3))
-
-function M.scene_rotation(angle)
-    return vmath.quat_axis_angle(scene_up, angle)
-end
-
+--- Convert physical window pixels to a point on the ground plane.
 function M.to_world(x, y)
-    local sx = (x - M.width / 2) / M.pixels_per_unit
-    local sy = (y - M.height / 2) / M.pixels_per_unit
-    return vmath.vector3((sy/u-sx/r)/2, 0, (sy/u+sx/r)/2)
+    local w, h = window.get_size()
+    if w <= 0 or h <= 0 then return nil end
+    local cam = msg.url(M.camera_url)
+    local inverse = vmath.inv(camera.get_projection(cam) * camera.get_view(cam))
+    local nx, ny = 2 * x / w - 1, 2 * y / h - 1
+    local near = inverse * vmath.vector4(nx, ny, -1, 1)
+    local far = inverse * vmath.vector4(nx, ny, 1, 1)
+    local origin = vmath.vector3(near.x / near.w, near.y / near.w, near.z / near.w)
+    local direction = vmath.vector3(far.x / far.w, far.y / far.w, far.z / far.w) - origin
+    if math.abs(direction.y) < 0.000001 then return nil end
+    local t = (M.floor_y - origin.y) / direction.y
+    if t < 0 then return nil end
+    return origin + direction * t
 end
 
-function M.to_image(p)
-    return M.width/2 + M.pixels_per_unit*r*(p.z-p.x),
-           M.height/2 + M.pixels_per_unit*u*(p.x+p.z)
-end
-
-function M.viewport(w, h)
-    local scale = math.min(w/M.width, h/M.height)
-    local vw, vh = math.floor(M.width*scale), math.floor(M.height*scale)
-    return math.floor((w-vw)/2), math.floor((h-vh)/2), vw, vh
+--- Ground direction corresponding to a direction on screen, using the actual camera.
+function M.screen_direction(x, y)
+    local inverse_view = vmath.inv(camera.get_view(msg.url(M.camera_url)))
+    local right = inverse_view * vmath.vector4(1, 0, 0, 0)
+    local up = inverse_view * vmath.vector4(0, 1, 0, 0)
+    return vmath.vector3(right.x * x + up.x * y, 0, right.z * x + up.z * y)
 end
 
 function M.clamp_to_map(p)
-    local x, y = M.to_image(p)
-    return M.to_world(math.max(35, math.min(M.width-35, x)), math.max(35, math.min(M.height-200, y)))
+    local limit = M.floor_limit
+    return vmath.vector3(math.max(-limit, math.min(limit, p.x)), M.floor_y,
+        math.max(-limit, math.min(limit, p.z)))
 end
 
 return M

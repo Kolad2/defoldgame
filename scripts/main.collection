@@ -10,14 +10,21 @@ instances {
 instances {
  id: "location"
  prototype: "/scripts/location.go"
- position { x: 960 y: 540 z: -1000 }
+ position { x: 0 y: 0 z: 0 }
  rotation { x: 0 y: 0 z: 0 w: 1 }
  scale3 { x: 1 y: 1 z: 1 }
 }
 instances {
  id: "character"
  prototype: "/scripts/character/character.go"
- position { x: 950 y: 390 z: 0 }
+ position { x: 0 y: 0 z: 0 }
  rotation { x: 0 y: 0 z: 0 w: 1 }
- scale3 { x: 110 y: 110 z: 110 }
+ scale3 { x: 1 y: 1 z: 1 }
+}
+instances {
+ id: "camera"
+ prototype: "/scripts/camera.go"
+ position { x: 24 y: 24 z: 24 }
+ rotation { x: -0.2798481423 y: 0.3647051996 z: 0.1159168960 w: 0.8804762392 }
+ scale3 { x: 1 y: 1 z: 1 }
 }
