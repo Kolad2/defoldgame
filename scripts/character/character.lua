@@ -1,4 +1,4 @@
-require("scripts.unit_controller.order.order")
+require("scripts.character.unit_controller.order.order")
 local AnimationPlayer = require("scripts.character.animation_player")
 
 local ARRIVAL_DISTANCE = 0.001
@@ -30,7 +30,6 @@ function Character:update(dt)
         self.animation_player:set_walking(false)
         return
     end
-
     local direction = delta / distance
     local step = math.min(self.speed * math.min(dt, 0.1), distance)
     local next_pos = pos + direction * step

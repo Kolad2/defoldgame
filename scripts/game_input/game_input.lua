@@ -1,5 +1,5 @@
 local Observer = require("scripts.tools.observer")
-local UnitControllerPlayer = require("scripts.unit_controller.unit_controller_player")
+local UnitControllerPlayer = require("scripts.character.unit_controller.unit_controller_player")
 local TOUCH = hash("touch")
 
 ---@class GameInput

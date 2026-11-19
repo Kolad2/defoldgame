@@ -1,4 +1,4 @@
-require("scripts.unit_controller.order.order")
+require("scripts.character.unit_controller.order.order")
 local Observer = require("scripts.tools.observer")
 
 ---@class UnitController

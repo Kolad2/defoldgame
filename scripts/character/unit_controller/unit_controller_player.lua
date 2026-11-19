@@ -1,5 +1,5 @@
-require("scripts.unit_controller.order.order")
-local UnitController = require("scripts.unit_controller.unit_controller")
+require("scripts.character.unit_controller.order.order")
+local UnitController = require("scripts.character.unit_controller.unit_controller")
 
 ---@class UnitControllerPlayer : UnitController
 ---@field private input GameInput
