@@ -1,5 +1,6 @@
 require("scripts.character.brain.order.order")
 local AnimationPlayer = require("scripts.character.animation_player")
+local MovementController = require("scripts.character.movement_controller")
 
 local ARRIVAL_DISTANCE = 0.001
 
@@ -8,6 +9,7 @@ local ARRIVAL_DISTANCE = 0.001
 ---@field brain Brain
 ---@field speed number
 ---@field animation_player AnimationPlayer
+---@field movement_controller MovementController
 local Character = {}
 Character.__index = Character
 
@@ -57,6 +59,7 @@ function Character:create(id, brain)
     obj.brain = brain
     obj.speed = 1.0
     obj.animation_player = AnimationPlayer:create(id)
+    obj.movement_controller = MovementController:create(self)
     return obj
 end
 
