@@ -1,14 +1,14 @@
-require("scripts.character.unit_controller.order.order")
+require("scripts.character.brain.order.order")
 local Observer = require("scripts.tools.observer")
 
----@class UnitController
+---@class Brain
 ---@field order Order | nil
 ---@field got_new_order Observer
-local UnitController = {}
-UnitController.__index = UnitController
+local Brain = {}
+Brain.__index = Brain
 
----@return UnitController
-function UnitController:create()
+---@return Brain
+function Brain:create()
     local obj = setmetatable({}, self)
     obj.order = nil
     obj.got_new_order = Observer:create()
@@ -16,9 +16,9 @@ function UnitController:create()
 end
 
 ---@param order Order
-function UnitController:set_order(order)
+function Brain:set_order(order)
     self.order = order
     self.got_new_order:emit(order)
 end
 
-return UnitController
+return Brain

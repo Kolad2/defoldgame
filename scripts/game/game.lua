@@ -13,8 +13,8 @@ function Game:init()
     self.input = GameInput:create(self)
 
     local id = go.get_id("/character")
-    local controller = self.input:create_controller()
-    self.char = Character:create(id, controller)
+    local brain = self.input:create_brain()
+    self.char = Character:create(id, brain)
     msg.post(".", "acquire_input_focus")
 end
 

@@ -1,11 +1,11 @@
-require("scripts.character.unit_controller.order.order")
+require("scripts.character.brain.order.order")
 local AnimationPlayer = require("scripts.character.animation_player")
 
 local ARRIVAL_DISTANCE = 0.001
 
 ---@class Character
 ---@field id hash
----@field controller UnitController
+---@field brain Brain
 ---@field speed number
 ---@field animation_player AnimationPlayer
 local Character = {}
@@ -13,7 +13,7 @@ Character.__index = Character
 
 ---@param dt number
 function Character:update(dt)
-    local order = self.controller.order
+    local order = self.brain.order
     if not order or getmetatable(order) ~= OrderMovePoint then
         self.animation_player:set_walking(false)
         return
@@ -26,7 +26,7 @@ function Character:update(dt)
     local distance = vmath.length(delta)
     if distance <= ARRIVAL_DISTANCE then
         go.set_position(target, self.id)
-        self.controller.order = nil
+        self.brain.order = nil
         self.animation_player:set_walking(false)
         return
     end
@@ -43,18 +43,18 @@ function Character:update(dt)
 
     if distance <= step + ARRIVAL_DISTANCE then
         go.set_position(target, self.id)
-        self.controller.order = nil
+        self.brain.order = nil
         self.animation_player:set_walking(false)
     end
 end
 
 ---@param id hash
----@param controller UnitController
+---@param brain Brain
 ---@return Character
-function Character:create(id, controller)
+function Character:create(id, brain)
     local obj = setmetatable({}, self)
     obj.id = id
-    obj.controller = controller
+    obj.brain = brain
     obj.speed = 1.0
     obj.animation_player = AnimationPlayer:create(id)
     return obj
