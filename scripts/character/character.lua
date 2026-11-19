@@ -1,31 +1,21 @@
 require("scripts.unit_controller.order.order")
+local AnimationPlayer = require("scripts.character.animation_player")
 
-local WALK = "Mixamo | Catwalk Walk Forward"
 local ARRIVAL_DISTANCE = 0.001
 
 ---@class Character
 ---@field id hash
 ---@field controller UnitController
 ---@field speed number
----@field private model_url url
----@field private moving boolean
+---@field animation_player AnimationPlayer
 local Character = {}
 Character.__index = Character
-
-
----@param moving boolean
-function Character:_set_walking(moving)
-    if self.moving == moving then return end
-    self.moving = moving
-    go.set(self.model_url, "playback_rate", moving and 1 or 0)
-    if not moving then go.set(self.model_url, "cursor", 0) end
-end
 
 ---@param dt number
 function Character:update(dt)
     local order = self.controller.order
     if not order or getmetatable(order) ~= OrderMovePoint then
-        self:_set_walking(false)
+        self.animation_player:set_walking(false)
         return
     end
 
@@ -37,7 +27,7 @@ function Character:update(dt)
     if distance <= ARRIVAL_DISTANCE then
         go.set_position(target, self.id)
         self.controller.order = nil
-        self:_set_walking(false)
+        self.animation_player:set_walking(false)
         return
     end
 
@@ -50,12 +40,12 @@ function Character:update(dt)
     if moved then
         go.set_rotation(vmath.quat_rotation_y(math.atan2(-direction.x, -direction.z)), self.id)
     end
-    self:_set_walking(moved)
+    self.animation_player:set_walking(moved)
 
     if distance <= step + ARRIVAL_DISTANCE then
         go.set_position(target, self.id)
         self.controller.order = nil
-        self:_set_walking(false)
+        self.animation_player:set_walking(false)
     end
 end
 
@@ -67,9 +57,7 @@ function Character:create(id, controller)
     obj.id = id
     obj.controller = controller
     obj.speed = 1.0
-    obj.model_url = msg.url(nil, id, "model")
-    obj.moving = false
-    model.play_anim(obj.model_url, WALK, go.PLAYBACK_LOOP_FORWARD, { playback_rate = 0 })
+    obj.animation_player = AnimationPlayer:create(id)
     return obj
 end
 
