@@ -1,9 +1,7 @@
 ---@class Camera
 local Camera = {}
 Camera.camera_url = "main:/camera#camera"
--- world.glb: a 20 x 20 plane at Y = 0. Leave room for the character at its edge.
 Camera.floor_y = 0
-Camera.floor_limit = 9.7
 
 --- Return the shared camera module; no separate instance is created.
 ---@return Camera
@@ -34,12 +32,6 @@ function Camera.screen_direction(x, y)
     local right = inverse_view * vmath.vector4(1, 0, 0, 0)
     local up = inverse_view * vmath.vector4(0, 1, 0, 0)
     return vmath.vector3(right.x * x + up.x * y, 0, right.z * x + up.z * y)
-end
-
-function Camera.clamp_to_map(p)
-    local limit = Camera.floor_limit
-    return vmath.vector3(math.max(-limit, math.min(limit, p.x)), Camera.floor_y,
-        math.max(-limit, math.min(limit, p.z)))
 end
 
 return Camera

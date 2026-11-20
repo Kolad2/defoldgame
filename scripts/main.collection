@@ -24,7 +24,7 @@ instances {
 instances {
  id: "camera"
  prototype: "/scripts/camera.go"
- position { x: 24 y: 24 z: 24 }
+ position { x: 24 y: 25.6 z: 24 }
  rotation { x: -0.2798481423 y: 0.3647051996 z: 0.1159168960 w: 0.8804762392 }
  scale3 { x: 1 y: 1 z: 1 }
 }

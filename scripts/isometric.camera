@@ -4,5 +4,6 @@ near_z: 0.1
 far_z: 100.0
 auto_aspect_ratio: 1
 orthographic_projection: 1
+# Пользовательская настройка: не менять зум без прямой просьбы пользователя.
 orthographic_zoom: 50
 orthographic_mode: ORTHO_MODE_AUTO_FIT
