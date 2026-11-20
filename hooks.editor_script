@@ -1,0 +1,10 @@
+local M = {}
+
+local function generate_location_groups()
+    editor.execute("python", "tools/generate_location_groups.py")
+end
+
+M.on_build_started = generate_location_groups
+M.on_bundle_started = generate_location_groups
+
+return M
