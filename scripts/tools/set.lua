@@ -2,15 +2,16 @@ do
     local table = require("scripts.tools.table.init")
     local dict = require("scripts.tools.dict.init")
     
-    ---@class set
+    ---@class set<T>
+    ---@field [integer] T
     ---@field remove fun(self:set, item:any): boolean
     ---@field add fun(self:set, item:any): boolean
     ---@field has fun(self:set, item:any): boolean
     ---@field get_random fun(self:set): any
     ---@field remove_random fun(self:set)
     ---@field __index_dict dict
-    ---@overload fun(): set
-    ---@overload fun(tbl: table): set
+    ---@overload fun<T>(): set<T>
+    ---@overload fun<T>(tbl: T[]): set<T>
     set = set or {}
 
     ---@param item any
@@ -143,10 +144,11 @@ do
 
 
     --- Создаёт новое множество.
-    ---@param tbl? table|set Начальная таблица элементов (опционально).
-    ---@return set
+    ---@generic T
+    ---@param tbl? T[] Начальная таблица элементов (опционально).
+    ---@return set<T>
     function set:create(tbl)
-        tbl = tbl or {} ---@type set
+        tbl = tbl or {} ---@type set<T>
         local index_dict = dict()
         local i = 1
         while i <= #tbl do

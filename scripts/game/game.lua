@@ -7,7 +7,7 @@ local set = require("scripts.tools.set")
 ---@field input GameInput
 ---@field char Character
 ---@field camera Camera
----@field units set[Character]
+---@field units set<Character>
 local Game = {}
 
 function Game:init()
