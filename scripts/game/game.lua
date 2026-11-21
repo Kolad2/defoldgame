@@ -1,11 +1,13 @@
 local GameInput = require("scripts.game_input.game_input")
 local Character = require("scripts.character.character")
 local Camera = require("scripts.camera")
+local set = require("scripts.tools.set")
 
 ---@class Game
 ---@field input GameInput
 ---@field char Character
 ---@field camera Camera
+---@field units set
 local Game = {}
 
 function Game:init()
@@ -15,6 +17,8 @@ function Game:init()
     local id = go.get_id("/character")
     local brain = self.input:create_brain()
     self.char = Character:create(id, brain)
+    self.units = set()
+    self.units:add(self.char)
     msg.post(".", "acquire_input_focus")
 end
 

@@ -9,7 +9,8 @@ do
     ---@field get_random fun(self:set): any
     ---@field remove_random fun(self:set)
     ---@field __index_dict dict
-    ---@overload fun(tbl:table): set
+    ---@overload fun(): set
+    ---@overload fun(tbl: table): set
     set = set or {}
 
     ---@param item any
@@ -142,7 +143,7 @@ do
 
 
     --- Создаёт новое множество.
-    ---@param tbl table|set|nil Начальная таблица элементов (опционально).
+    ---@param tbl? table|set Начальная таблица элементов (опционально).
     ---@return set
     function set:create(tbl)
         tbl = tbl or {} ---@type set

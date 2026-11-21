@@ -1,30 +1,43 @@
 name: "main"
+instances {
+  id: "game"
+  prototype: "/scripts/main.go"
+}
+instances {
+  id: "location"
+  prototype: "/scripts/location.go"
+}
+instances {
+  id: "character"
+  prototype: "/objects/character.go"
+}
+instances {
+  id: "camera"
+  prototype: "/scripts/camera.go"
+  position {
+    x: 24.0
+    y: 25.6
+    z: 24.0
+  }
+  rotation {
+    x: -0.27984813
+    y: 0.3647052
+    z: 0.11591689
+    w: 0.88047624
+  }
+}
+instances {
+  id: "npc_1"
+  prototype: "/objects/character.go"
+  position {
+    x: -4.616545
+    z: 2.0
+  }
+  rotation {
+    x: 1.1249884E-14
+    y: -0.65026176
+    z: 9.9527E-16
+    w: 0.75971025
+  }
+}
 scale_along_z: 1
-instances {
- id: "game"
- prototype: "/scripts/main.go"
- position { x: 0 y: 0 z: 0 }
- rotation { x: 0 y: 0 z: 0 w: 1 }
- scale3 { x: 1 y: 1 z: 1 }
-}
-instances {
- id: "location"
- prototype: "/scripts/location.go"
- position { x: 0 y: 0 z: 0 }
- rotation { x: 0 y: 0 z: 0 w: 1 }
- scale3 { x: 1 y: 1 z: 1 }
-}
-instances {
- id: "character"
- prototype: "/scripts/character/character.go"
- position { x: 0 y: 0 z: 0 }
- rotation { x: 0 y: 0 z: 0 w: 1 }
- scale3 { x: 1 y: 1 z: 1 }
-}
-instances {
- id: "camera"
- prototype: "/scripts/camera.go"
- position { x: 24 y: 25.6 z: 24 }
- rotation { x: -0.2798481423 y: 0.3647051996 z: 0.1159168960 w: 0.8804762392 }
- scale3 { x: 1 y: 1 z: 1 }
-}
