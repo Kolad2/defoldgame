@@ -7,7 +7,7 @@ local set = require("scripts.tools.set")
 ---@field input GameInput
 ---@field char Character
 ---@field camera Camera
----@field units set
+---@field units set[Character]
 local Game = {}
 
 function Game:init()
@@ -23,7 +23,9 @@ function Game:init()
 end
 
 function Game:update(dt)
-    self.char:update(dt)
+    for _, unit in ipairs(self.units) do
+        unit:update(dt)
+    end
 end
 
 function Game:on_input(action_id, action)
