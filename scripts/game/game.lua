@@ -1,5 +1,6 @@
 local GameInput = require("scripts.game_input.game_input")
 local Character = require("scripts.character.character")
+local BrainAI = require("scripts.character.brain.brain_ai")
 local Camera = require("scripts.camera")
 local set = require("scripts.tools.set")
 
@@ -13,12 +14,19 @@ local Game = {}
 function Game:init()
     self.camera = Camera:init()
     self.input = GameInput:create(self)
+    self.units = set()
+
 
     local id = go.get_id("/character")
     local brain = self.input:create_brain()
     self.char = Character:create(id, brain)
-    self.units = set()
+
+    id = go.get_id("/npc_1")
+    local ai_brain = BrainAI:create()
+    local unit = Character:create(id, ai_brain)
+
     self.units:add(self.char)
+    self.units:add(unit)
     msg.post(".", "acquire_input_focus")
 end
 

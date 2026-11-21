@@ -1,12 +1,14 @@
 require("scripts.character.brain.order.order")
+local Brain = require("scripts.character.brain.brain")
 
 ---@class BrainAI : Brain
-local BrainAI = {}
+local BrainAI = setmetatable({}, { __index = Brain })
 BrainAI.__index = BrainAI
 
 ---@return BrainAI
 function BrainAI:create()
-    local obj = setmetatable({}, self)
+    ---@type BrainAI
+    local obj = Brain.create(self)
     return obj
 end
 
