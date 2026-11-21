@@ -7,6 +7,8 @@ function init(self)
     assert(scene_data, scene_error)
     local scene = json.decode(scene_data)
     self.location = Location:create(go.get_id("/location"), scene)
+    -- The doorway plane marks an interaction area and should not be rendered.
+    self.location:set_node_visible("area", false)
 
     -- Calculate initial visibility once; update explicitly when the camera changes.
     local component = msg.url(Game.camera.camera_url)

@@ -18,8 +18,8 @@ function Character:update(dt)
 end
 
 ---@private
-function Character:_on_new_order()
-    local order = self.brain.order
+---@param order Order | nil
+function Character:_on_new_order(order)
     self.movement_controller:stop()
     self.animation_player:set_walking(false)
 
@@ -30,6 +30,17 @@ function Character:_on_new_order()
     elseif order and getmetatable(order) == OrderPatrol then
         ---@cast order OrderPatrol
         self.movement_controller:set_path({ order.from_point, order.target_point })
+    end
+end
+
+---@private
+function Character:_on_path_completed()
+    local order = self.brain.order
+    if order and getmetatable(order) == OrderPatrol then
+        ---@cast order OrderPatrol
+        self.movement_controller:set_path({ order.from_point, order.target_point })
+    elseif order and getmetatable(order) == OrderMovePoint then
+        self.brain.order = nil
     end
 end
 
@@ -44,18 +55,12 @@ function Character:create(id, brain)
     obj.animation_player = AnimationPlayer:create(id)
     obj.movement_controller = MovementController:create(obj)
     obj.movement_controller.path_completed:subscribe(function()
-        local order = obj.brain.order
-        if order and getmetatable(order) == OrderPatrol then
-            ---@cast order OrderPatrol
-            obj.movement_controller:set_path({ order.from_point, order.target_point })
-        elseif order and getmetatable(order) == OrderMovePoint then
-            obj.brain.order = nil
-        end
+        obj:_on_path_completed()
     end)
-    obj.brain.got_new_order:subscribe(function()
-        obj:_on_new_order()
+    obj.brain.got_new_order:subscribe(function(order)
+        obj:_on_new_order(order)
     end)
-    obj:_on_new_order()
+    obj:_on_new_order(brain.order)
     return obj
 end
 

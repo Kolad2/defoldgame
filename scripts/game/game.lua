@@ -24,6 +24,7 @@ function Game:init()
     id = go.get_id("/npc_1")
     brain = BrainAI:create()
     local unit = Character:create(id, brain)
+    brain:set_order(OrderPatrol:create(go.get_position(id), vmath.vector3(-2, 0, 2)))
 
     self.units:add(self.char)
     self.units:add(unit)
