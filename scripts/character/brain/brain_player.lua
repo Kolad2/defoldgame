@@ -22,7 +22,7 @@ end
 ---@param x number
 ---@param y number Floor coordinate corresponding to world Z.
 function BrainPlayer:_on_game_input_ground(x, y)
-    self:set_order(OrderMovePoint:create(x, y))
+    self:set_order(OrderMovePoint:create(vmath.vector3(x, 0, y)))
 end
 
 return BrainPlayer

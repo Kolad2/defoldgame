@@ -8,7 +8,6 @@ local MovementController = require("scripts.character.movement_controller")
 ---@field speed number
 ---@field animation_player AnimationPlayer
 ---@field movement_controller MovementController
----@field private movement_order OrderMovePoint | nil
 local Character = {}
 Character.__index = Character
 
@@ -19,17 +18,18 @@ function Character:update(dt)
 end
 
 ---@private
----@param order Order | nil
-function Character:_on_new_order(order)
-    self.movement_order = nil
+function Character:_on_new_order()
+    local order = self.brain.order
     self.movement_controller:stop()
     self.animation_player:set_walking(false)
 
     if order and getmetatable(order) == OrderMovePoint then
         ---@cast order OrderMovePoint
-        self.movement_order = order
         -- A future pathfinder can supply the route here instead of one point.
-        self.movement_controller:set_path({ vmath.vector3(order.x, 0, order.z) })
+        self.movement_controller:set_path({ order.target_point })
+    elseif order and getmetatable(order) == OrderPatrol then
+        ---@cast order OrderPatrol
+        self.movement_controller:set_path({ order.from_point, order.target_point })
     end
 end
 
@@ -44,15 +44,18 @@ function Character:create(id, brain)
     obj.animation_player = AnimationPlayer:create(id)
     obj.movement_controller = MovementController:create(obj)
     obj.movement_controller.path_completed:subscribe(function()
-        if obj.brain.order == obj.movement_order then
+        local order = obj.brain.order
+        if order and getmetatable(order) == OrderPatrol then
+            ---@cast order OrderPatrol
+            obj.movement_controller:set_path({ order.from_point, order.target_point })
+        elseif order and getmetatable(order) == OrderMovePoint then
             obj.brain.order = nil
         end
-        obj.movement_order = nil
     end)
-    obj.brain.got_new_order:subscribe(function(order)
-        obj:_on_new_order(order)
+    obj.brain.got_new_order:subscribe(function()
+        obj:_on_new_order()
     end)
-    obj:_on_new_order(brain.order)
+    obj:_on_new_order()
     return obj
 end
 
