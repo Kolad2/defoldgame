@@ -22,8 +22,8 @@ function Game:init()
     self.char = Character:create(id, brain)
 
     id = go.get_id("/npc_1")
-    local ai_brain = BrainAI:create()
-    local unit = Character:create(id, ai_brain)
+    brain = BrainAI:create()
+    local unit = Character:create(id, brain)
 
     self.units:add(self.char)
     self.units:add(unit)
