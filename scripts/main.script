@@ -1,12 +1,13 @@
 local Game = require("scripts.game.game")
 local Location = require("scripts.location.location")
+local GLBHierarchy = require("scripts.tools.glb_hierarchy")
 
 function init(self)
     Game:init()
     local scene_data, scene_error = sys.load_resource("/assets/locations/bar/bar.hierarchy.json")
     assert(scene_data, scene_error)
-    local scene = json.decode(scene_data)
-    self.location = Location:create(go.get_id("/location"), scene)
+    local hierarchy = GLBHierarchy:create(json.decode(scene_data))
+    self.location = Location:create(go.get_id("/location"), hierarchy)
     -- The doorway plane marks an interaction area and should not be rendered.
     self.location:set_node_visible("area", false)
 

@@ -51,6 +51,7 @@ model = {
 
 local Location = require("scripts.location.location")
 local Wall = require("scripts.location.wall")
+local GLBHierarchy = require("scripts.tools.glb_hierarchy")
 local wall_nodes = {}
 local scene = {{room = {"floor", {walls = wall_nodes}, {doors = {{door_1 = {"area"}}}}}}}
 local function group(name, meshes)
@@ -66,7 +67,8 @@ end
 wall_nodes[1].wall_down[#wall_nodes[1].wall_down + 1] = {details = {"extra_beam", "empty_marker"}}
 mesh_bounds.extra_beam = {}
 
-local location = Location:create("bar", scene)
+local hierarchy = GLBHierarchy:create(scene)
+local location = Location:create("bar", hierarchy)
 local count = 0
 for _ in pairs(location.walls) do count = count + 1 end
 assert(count == 8, "Exactly eight wall groups")
@@ -125,7 +127,7 @@ location:update_visibility(vmath.vector3(-1, -1, -1))
 check_corners()
 
 transforms.rotated = math.pi / 2
-local rotated = Location:create("rotated", scene)
+local rotated = Location:create("rotated", hierarchy)
 rotated:update_visibility(vmath.vector3(-1, -1, -1))
 assert(not visible["rotated#room"].wall_left and not visible["rotated#room"].wall_down)
 assert(visible["rotated#room"].wall_right and visible["rotated#room"].wall_top)
@@ -136,7 +138,7 @@ local previous_changes = changes
 location:update_visibility(vmath.vector3())
 assert(changes == previous_changes, "Zero direction preserves visibility")
 
-local empty = Location:create("empty", {})
+local empty = Location:create("empty", GLBHierarchy:create({}))
 count = 0
 for _, wall in pairs(empty.walls) do
     count = count + 1
