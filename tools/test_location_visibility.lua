@@ -74,7 +74,7 @@ assert(location.walls.floor == nil, "Only wall groups belong to the dictionary")
 for key in pairs(location) do
     assert(key == "id" or key == "model_url" or key == "walls", "Unexpected retained state: " .. key)
 end
-local state = visible["bar#floor"]
+local state = visible["bar#room"]
 local function check(name, expected) assert(state[name] == expected, name) end
 local function check_corners(s)
     s = s or state
@@ -122,9 +122,9 @@ check_corners()
 transforms.rotated = math.pi / 2
 local rotated = Location:create("rotated", scene)
 rotated:update_visibility(vmath.vector3(-1, -1, -1))
-assert(not visible["rotated#floor"].wall_left and not visible["rotated#floor"].wall_down)
-assert(visible["rotated#floor"].wall_right and visible["rotated#floor"].wall_top)
-check_corners(visible["rotated#floor"])
+assert(not visible["rotated#room"].wall_left and not visible["rotated#room"].wall_down)
+assert(visible["rotated#room"].wall_right and visible["rotated#room"].wall_top)
+check_corners(visible["rotated#room"])
 check("wall_left", true)
 
 local previous_changes = changes
