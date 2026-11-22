@@ -50,6 +50,7 @@ model = {
 }
 
 local Location = require("scripts.location.location")
+local Wall = require("scripts.location.wall")
 local wall_nodes = {}
 local scene = {{room = {"floor", {walls = wall_nodes}, {doors = {{door_1 = {"area"}}}}}}}
 local function group(name, meshes)
@@ -69,7 +70,11 @@ local location = Location:create("bar", scene)
 local count = 0
 for _ in pairs(location.walls) do count = count + 1 end
 assert(count == 8, "Exactly eight wall groups")
-assert(#location.walls.wall_down == 3, "Nested meshes included, empty nodes skipped, names deduplicated")
+assert(#location.walls.wall_down.meshes == 3, "Nested meshes included, empty nodes skipped, names deduplicated")
+for _, wall in pairs(location.walls) do
+    assert(getmetatable(wall) == Wall, "Each wall group is a Wall instance")
+    assert(wall.id == "bar" and wall.model_url == "bar#room", "Wall addresses the location model")
+end
 assert(location.walls.floor == nil, "Only wall groups belong to the dictionary")
 for key in pairs(location) do
     assert(key == "id" or key == "model_url" or key == "walls", "Unexpected retained state: " .. key)
@@ -102,7 +107,7 @@ end
 
 -- Manual operations affect only the requested meshes, without remembered masks.
 location:update_visibility(vmath.vector3(-1, -1, -1))
-location:set_node_visible("wall_left", false)
+location.walls.wall_left:set_visible(false)
 check("wall_left", false); check("beam_left_top", false)
 check("corner_top_left", true); check("corner_down_left", true)
 location:update_visibility(vmath.vector3(-1, -1, -1))
@@ -110,8 +115,8 @@ check("wall_left", true)
 location:set_node_visible("wall_down", true)
 check("wall_down", true); check("corner_down_right", false)
 location:set_node_visible("walls", false)
-for _, meshes in pairs(location.walls) do
-    for _, mesh in ipairs(meshes) do check(mesh, false) end
+for _, wall in pairs(location.walls) do
+    for _, mesh in ipairs(wall.meshes) do check(mesh, false) end
 end
 check("floor", true); check("area", false)
 location:set_node_visible("wall_top", true)
@@ -133,9 +138,9 @@ assert(changes == previous_changes, "Zero direction preserves visibility")
 
 local empty = Location:create("empty", {})
 count = 0
-for _, meshes in pairs(empty.walls) do
+for _, wall in pairs(empty.walls) do
     count = count + 1
-    assert(#meshes == 0, "Absent walls have empty lists")
+    assert(#wall.meshes == 0, "Absent walls have empty lists")
 end
 assert(count == 8)
 empty:update_visibility(vmath.vector3(-1, -1, -1))

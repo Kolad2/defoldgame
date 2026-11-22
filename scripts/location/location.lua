@@ -1,6 +1,8 @@
+local Wall = require("scripts.location.wall")
+
 ---@class Location
 ---@field id hash
----@field walls table<string, hash[]?>
+---@field walls table<string, Wall>
 ---@field private model_url url
 local Location = {}
 Location.__index = Location
@@ -62,16 +64,14 @@ end
 ---@param name string Wall group name, "walls", or a mesh name.
 ---@param visible boolean
 function Location:set_node_visible(name, visible)
+    local selected_wall = self.walls[name]
+    ---@cast selected_wall Wall|nil
     if name == "walls" then
-        for _, meshes in pairs(self.walls) do
-            for _, mesh in ipairs(meshes) do
-                model.set_mesh_enabled(self.model_url, mesh, visible)
-            end
+        for _, wall in pairs(self.walls) do
+            wall:set_visible(visible)
         end
-    elseif self.walls[name] then
-        for _, mesh in ipairs(self.walls[name]) do
-            model.set_mesh_enabled(self.model_url, mesh, visible)
-        end
+    elseif selected_wall then
+        selected_wall:set_visible(visible)
     else
         model.set_mesh_enabled(self.model_url, hash(name), visible)
     end
@@ -91,14 +91,14 @@ function Location:update_visibility(camera_direction)
     local right = direction.x >= 0
     local left = direction.x <= 0
 
-    self:set_node_visible("wall_down", down)
-    self:set_node_visible("wall_top", top)
-    self:set_node_visible("wall_right", right)
-    self:set_node_visible("wall_left", left)
-    self:set_node_visible("wall_down_left", down or left)
-    self:set_node_visible("wall_down_right", down or right)
-    self:set_node_visible("wall_top_left", top or left)
-    self:set_node_visible("wall_top_right", top or right)
+    self.walls.wall_down:set_visible(down)
+    self.walls.wall_top:set_visible(top)
+    self.walls.wall_right:set_visible(right)
+    self.walls.wall_left:set_visible(left)
+    self.walls.wall_down_left:set_visible(down or left)
+    self.walls.wall_down_right:set_visible(down or right)
+    self.walls.wall_top_left:set_visible(top or left)
+    self.walls.wall_top_right:set_visible(top or right)
 end
 
 ---@param id hash
@@ -106,15 +106,17 @@ end
 ---@param component string|nil Model component id; defaults to "room".
 ---@return Location
 function Location:create(id, hierarchy, component)
+    component = component or "room"
     ---@type Location
     local obj = setmetatable({}, self)
     obj.id = id
-    obj.model_url = msg.url(nil, id, component or "room")
+    obj.model_url = msg.url(nil, id, component)
     obj.walls = {}
     local available_meshes = model.get_mesh_aabb(obj.model_url)
     for _, name in ipairs(WALL_NAMES) do
         local node = find_node(hierarchy, name)
-        obj.walls[name] = node and collect_meshes(node, available_meshes) or {}
+        local meshes = node and collect_meshes(node, available_meshes) or {}
+        obj.walls[name] = Wall:create(id, component, meshes)
     end
     return obj
 end
