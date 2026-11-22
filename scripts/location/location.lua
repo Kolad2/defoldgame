@@ -112,13 +112,13 @@ end
 
 ---@param id hash
 ---@param hierarchy table Tree decoded from this model's .hierarchy.json.
----@param component string|nil Model component id; defaults to "floor".
+---@param component string|nil Model component id; defaults to "room".
 ---@return Location
 function Location:create(id, hierarchy, component)
     ---@type Location
     local obj = setmetatable({}, self)
     obj.id = id
-    obj.model_url = msg.url(nil, id, component or "floor")
+    obj.model_url = msg.url(nil, id, component or "room")
     obj.walls = {}
     local available_meshes = model.get_mesh_aabb(obj.model_url)
     for _, name in ipairs(WALL_NAMES) do
