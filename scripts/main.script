@@ -3,7 +3,7 @@ local Location = require("scripts.location.location")
 
 function init(self)
     Game:init()
-    local scene_data, scene_error = sys.load_resource("/assets/locations/bar/bar.json")
+    local scene_data, scene_error = sys.load_resource("/assets/locations/bar/bar.hierarchy.json")
     assert(scene_data, scene_error)
     local scene = json.decode(scene_data)
     self.location = Location:create(go.get_id("/location"), scene)

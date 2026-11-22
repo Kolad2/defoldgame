@@ -19,6 +19,7 @@ function vmath.dot(a, b) return a.x * b.x + a.y * b.y + a.z * b.z end
 hash = function(value) return value end
 msg = {url = function(_, id, component) return id .. "#" .. component end}
 local transforms, visible, changes = {}, {}, 0
+local mesh_bounds = {floor = {}, area = {}}
 go = {
     update_world_transform = function() end,
     get_world_transform = function(id) return transforms[id] or 0 end,
@@ -30,6 +31,13 @@ function vmath.inv(angle)
     end})
 end
 model = {
+    get_mesh_aabb = function(url)
+        visible[url] = visible[url] or {}
+        for mesh in pairs(mesh_bounds) do
+            if visible[url][mesh] == nil then visible[url][mesh] = true end
+        end
+        return mesh_bounds
+    end,
     get_mesh_enabled = function(url, mesh)
         visible[url] = visible[url] or {}
         if visible[url][mesh] == nil then visible[url][mesh] = true end
@@ -42,34 +50,32 @@ model = {
 }
 
 local Location = require("scripts.location.location")
-local scene = {
-    groups = {room = {"floor"}, ["room/walls"] = {}, ["room/floor"] = {"floor"}},
-    aliases = {room = "room", walls = "room/walls", floor = "room/floor"},
-    visibility = {}, visibility_links = {},
-}
+local wall_nodes = {}
+local scene = {{room = {"floor", {walls = wall_nodes}, {doors = {{door_1 = {"area"}}}}}}}
 local function group(name, meshes)
-    local path = "room/walls/" .. name
-    scene.aliases[name] = path
-    scene.groups[path] = meshes
-    for _, mesh in ipairs(meshes) do
-        table.insert(scene.groups.room, mesh)
-        table.insert(scene.groups["room/walls"], mesh)
-    end
-    return path
+    wall_nodes[#wall_nodes + 1] = {[name] = meshes}
+    for _, mesh in ipairs(meshes) do mesh_bounds[mesh] = {} end
 end
-for name, normal in pairs({down = {0, 0, 1}, right = {1, 0, 0},
-                          top = {0, 0, -1}, left = {-1, 0, 0}}) do
-    scene.visibility[group("wall_" .. name, {"wall_" .. name, "beam_" .. name .. "_top"})] = {normal}
+for _, name in ipairs({"down", "right", "top", "left"}) do
+    group("wall_" .. name, {"wall_" .. name, "beam_" .. name .. "_top"})
 end
-for name, neighbors in pairs({down_left = {"down", "left"}, down_right = {"down", "right"},
-                             top_left = {"top", "left"}, top_right = {"top", "right"}}) do
-    scene.visibility_links[group("wall_" .. name, {"corner_" .. name})] = {
-        scene.aliases["wall_" .. neighbors[1]], scene.aliases["wall_" .. neighbors[2]],
-    }
+for _, name in ipairs({"down_left", "down_right", "top_left", "top_right"}) do
+    group("wall_" .. name, {"corner_" .. name})
 end
+wall_nodes[1].wall_down[#wall_nodes[1].wall_down + 1] = {details = {"extra_beam", "empty_marker"}}
+mesh_bounds.extra_beam = {}
+
 local location = Location:create("bar", scene)
+local count = 0
+for _ in pairs(location.walls) do count = count + 1 end
+assert(count == 8, "Exactly eight wall groups")
+assert(#location.walls.wall_down == 3, "Nested meshes included, empty nodes skipped, names deduplicated")
+assert(location.walls.floor == nil, "Only wall groups belong to the dictionary")
+for key in pairs(location) do
+    assert(key == "id" or key == "model_url" or key == "walls", "Unexpected retained state: " .. key)
+end
 local state = visible["bar#floor"]
-local function check(wall, expected) assert(state[wall] == expected, wall) end
+local function check(name, expected) assert(state[name] == expected, name) end
 local function check_corners(s)
     s = s or state
     assert(s.corner_down_left == (s.wall_down or s.wall_left), "down-left corner")
@@ -78,79 +84,40 @@ local function check_corners(s)
     assert(s.corner_top_right == (s.wall_top or s.wall_right), "top-right corner")
 end
 
-location:update_visibility(vmath.vector3(-1, -1, -1))
-check("wall_down", false); check("wall_right", false)
-check("wall_top", true); check("wall_left", true)
-check("corner_down_left", true); check("corner_down_right", false)
-check("corner_top_right", true); check("corner_top_left", true)
-check_corners()
-check("beam_down_top", false); check("floor", true)
-local count = changes
-location:update_visibility(vmath.vector3(-1, -1, -1))
-assert(changes == count, "Unchanged camera must not toggle meshes")
-
--- Manual hiding does not influence the camera's corner rules, even after updates.
-location:set_node_visible("wall_left", false)
-check("wall_left", false); check("wall_down", false)
-check("corner_down_left", true)
-location:update_visibility(vmath.vector3(-1, -1, -1))
-check("corner_down_left", true)
-location:update_visibility(vmath.vector3(1, -1, -1))
-check("corner_down_left", false)
-location:update_visibility(vmath.vector3(-1, -1, -1))
-check("wall_left", false); check("corner_down_left", true)
-location:set_node_visible("wall_left", true)
-check("corner_down_left", true); check_corners()
-
-location:set_node_visible("wall_top", false)
-location:set_node_visible("wall_left", false)
-check("wall_top", false); check("wall_left", false)
-check("corner_top_left", true)
-location:update_visibility(vmath.vector3(-1, -2, -1))
-check("corner_top_left", true)
-location:set_node_visible("wall_top", true)
-location:set_node_visible("wall_left", true)
-check_corners()
-
--- Explicit hiding of a corner remains independent of camera changes as well.
-location:set_node_visible("wall_top_left", false)
-location:update_visibility(vmath.vector3(-1, -1, -1))
-check("corner_top_left", false)
-location:set_node_visible("wall_top_left", true)
-check_corners()
-
-location:update_visibility(vmath.vector3(1, -1, 1))
-check("wall_down", true); check("wall_right", true)
-check("wall_top", false); check("wall_left", false)
-check("corner_top_left", false); check("corner_down_right", true)
-check_corners()
-
--- On either side of the threshold, retain the previous state until it is crossed.
-location:update_visibility(vmath.vector3(0.01, 0, -1))
-check("wall_right", true); check("wall_left", false)
-check_corners()
-location:update_visibility(vmath.vector3(-0.01, 0, -1))
-check("wall_right", true); check("wall_left", false)
-check_corners()
-location:update_visibility(vmath.vector3(-0.1, 0, -1))
-check("wall_right", false); check("wall_left", true)
-check_corners()
-
-location:set_node_visible("walls", false)
-location:update_visibility(vmath.vector3(-1, -1, -1))
-check("wall_top", false)
-check_corners()
-location:set_node_visible("wall_top", true)
-check("wall_top", false)
-location:set_node_visible("walls", true)
-check("wall_top", true); check("wall_down", false)
-check_corners()
-
+location:set_node_visible("area", false)
 for _, direction in ipairs({{-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1}}) do
     location:update_visibility(vmath.vector3(direction[1], direction[2], direction[3]))
+    check("wall_down", direction[3] > 0)
+    check("wall_top", direction[3] < 0)
+    check("wall_right", direction[1] > 0)
+    check("wall_left", direction[1] < 0)
+    for _, side in ipairs({"down", "right", "top", "left"}) do
+        assert(state["beam_" .. side .. "_top"] == state["wall_" .. side])
+    end
     check_corners()
+    check("extra_beam", state.wall_down)
+    check("floor", true)
+    check("area", false)
 end
+
+-- Manual operations affect only the requested meshes, without remembered masks.
 location:update_visibility(vmath.vector3(-1, -1, -1))
+location:set_node_visible("wall_left", false)
+check("wall_left", false); check("beam_left_top", false)
+check("corner_top_left", true); check("corner_down_left", true)
+location:update_visibility(vmath.vector3(-1, -1, -1))
+check("wall_left", true)
+location:set_node_visible("wall_down", true)
+check("wall_down", true); check("corner_down_right", false)
+location:set_node_visible("walls", false)
+for _, meshes in pairs(location.walls) do
+    for _, mesh in ipairs(meshes) do check(mesh, false) end
+end
+check("floor", true); check("area", false)
+location:set_node_visible("wall_top", true)
+check("wall_top", true)
+location:update_visibility(vmath.vector3(-1, -1, -1))
+check_corners()
 
 transforms.rotated = math.pi / 2
 local rotated = Location:create("rotated", scene)
@@ -158,15 +125,18 @@ rotated:update_visibility(vmath.vector3(-1, -1, -1))
 assert(not visible["rotated#floor"].wall_left and not visible["rotated#floor"].wall_down)
 assert(visible["rotated#floor"].wall_right and visible["rotated#floor"].wall_top)
 check_corners(visible["rotated#floor"])
-check("wall_left", true) -- The other instance's rules/state remain independent.
+check("wall_left", true)
 
-count = changes
+local previous_changes = changes
 location:update_visibility(vmath.vector3())
-assert(changes == count, "Zero camera direction must preserve visibility")
+assert(changes == previous_changes, "Zero direction preserves visibility")
 
--- Before the first camera update, manual operations must not evaluate neighbor links.
-local manual = Location:create("manual", scene)
-manual:set_node_visible("wall_top", false)
-manual:set_node_visible("wall_left", false)
-assert(visible["manual#floor"].corner_top_left)
-print("Location direction, hysteresis, hierarchy and rotation checks passed")
+local empty = Location:create("empty", {})
+count = 0
+for _, meshes in pairs(empty.walls) do
+    count = count + 1
+    assert(#meshes == 0, "Absent walls have empty lists")
+end
+assert(count == 8)
+empty:update_visibility(vmath.vector3(-1, -1, -1))
+print("Location hierarchy, eight wall groups, direct visibility, corners and rotation checks passed")

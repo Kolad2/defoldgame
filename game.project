@@ -22,7 +22,7 @@ scale_mode = stretch
 
 [project]
 title = Project1
-custom_resources = /assets/locations/bar/bar.json
+custom_resources = /assets/locations/bar/bar.hierarchy.json
 
 
 

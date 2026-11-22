@@ -1,10 +1,10 @@
 local M = {}
 
-local function generate_location_groups()
-    editor.execute("python", "tools/generate_location_groups.py")
+local function generate_glb_hierarchy()
+    editor.execute("python", "tools/generate_glb_hierarchy.py")
 end
 
-M.on_build_started = generate_location_groups
-M.on_bundle_started = generate_location_groups
+M.on_build_started = generate_glb_hierarchy
+M.on_bundle_started = generate_glb_hierarchy
 
 return M
