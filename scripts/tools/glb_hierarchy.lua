@@ -65,4 +65,10 @@ function GLBHierarchy:create(nodes)
     return obj
 end
 
+---@param source string JSON hierarchy contents.
+---@return GLBHierarchy
+function GLBHierarchy:from_json(source)
+    return self:create(json.decode(source))
+end
+
 return GLBHierarchy

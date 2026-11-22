@@ -91,7 +91,7 @@ local function check_corners(s)
     assert(s.corner_top_right == (s.wall_top or s.wall_right), "top-right corner")
 end
 
-location:set_node_visible("area", false)
+check("area", false)
 for _, direction in ipairs({{-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1}}) do
     location:update_visibility(vmath.vector3(direction[1], direction[2], direction[3]))
     check("wall_down", direction[3] > 0)
@@ -114,14 +114,14 @@ check("wall_left", false); check("beam_left_top", false)
 check("corner_top_left", true); check("corner_down_left", true)
 location:update_visibility(vmath.vector3(-1, -1, -1))
 check("wall_left", true)
-location:set_node_visible("wall_down", true)
+location.walls.wall_down:set_visible(true)
 check("wall_down", true); check("corner_down_right", false)
-location:set_node_visible("walls", false)
+for _, wall in pairs(location.walls) do wall:set_visible(false) end
 for _, wall in pairs(location.walls) do
     for _, mesh in ipairs(wall.meshes) do check(mesh, false) end
 end
 check("floor", true); check("area", false)
-location:set_node_visible("wall_top", true)
+location.walls.wall_top:set_visible(true)
 check("wall_top", true)
 location:update_visibility(vmath.vector3(-1, -1, -1))
 check_corners()
