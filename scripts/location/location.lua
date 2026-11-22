@@ -5,12 +5,6 @@
 local Location = {}
 Location.__index = Location
 
-local DIRECTIONS = {
-    down = {0, 1},
-    right = {1, 0},
-    top = {0, -1},
-    left = {-1, 0},
-}
 local WALL_NAMES = {
     "wall_down", "wall_right", "wall_top", "wall_left",
     "wall_down_left", "wall_down_right", "wall_top_left", "wall_top_right",
@@ -83,7 +77,7 @@ function Location:set_node_visible(name, visible)
     end
 end
 
---- Apply visibility from the camera direction; derive corner visibility from wall names.
+--- Show far walls and any corners adjacent to a visible wall.
 ---@param camera_direction vector3 Direction FROM the camera INTO the scene.
 function Location:update_visibility(camera_direction)
     if vmath.length_sqr(camera_direction) < 0.000001 then return end
@@ -92,22 +86,19 @@ function Location:update_visibility(camera_direction)
     local inverse = vmath.inv(go.get_world_transform(self.id))
     local direction = inverse * vmath.vector4(
         camera_direction.x, camera_direction.y, camera_direction.z, 0)
-    local toward_camera = -vmath.normalize(vmath.vector3(direction.x, direction.y, direction.z))
+    local down = direction.z >= 0
+    local top = direction.z <= 0
+    local right = direction.x >= 0
+    local left = direction.x <= 0
 
-    ---@type table<string, boolean>
-    local visible = {}
-    for side, normal in pairs(DIRECTIONS) do
-        local score = normal[1] * toward_camera.x + normal[2] * toward_camera.z
-        visible["wall_" .. side] = score <= 0
-    end
-    for name in pairs(self.walls) do
-        local first, second = name:match("^wall_([^_]+)_([^_]+)$")
-        local enabled = visible[name]
-        if first then
-            enabled = visible["wall_" .. first] or visible["wall_" .. second]
-        end
-        self:set_node_visible(name, enabled)
-    end
+    self:set_node_visible("wall_down", down)
+    self:set_node_visible("wall_top", top)
+    self:set_node_visible("wall_right", right)
+    self:set_node_visible("wall_left", left)
+    self:set_node_visible("wall_down_left", down or left)
+    self:set_node_visible("wall_down_right", down or right)
+    self:set_node_visible("wall_top_left", top or left)
+    self:set_node_visible("wall_top_right", top or right)
 end
 
 ---@param id hash
