@@ -5,7 +5,7 @@ instances {
 }
 instances {
   id: "location"
-  prototype: "/scripts/location.go"
+  prototype: "/objects/locations/location.go"
 }
 instances {
   id: "character"

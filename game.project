@@ -14,6 +14,7 @@ high_dpi = 1
 input_method = HiddenInputField
 
 [physics]
+type = 3D
 gravity_y = -1000.0
 scale = 0.01
 
