@@ -6,6 +6,16 @@ instances {
 instances {
   id: "location"
   prototype: "/objects/locations/location.go"
+  children: "door_1"
+}
+instances {
+  id: "door_1"
+  prototype: "/objects/locations/door.go"
+  children: "door_area"
+}
+instances {
+  id: "door_area"
+  prototype: "/objects/locations/door_area.go"
 }
 instances {
   id: "character"

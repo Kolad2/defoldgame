@@ -1,6 +1,6 @@
 local Observer = require("scripts.tools.observer")
 local BrainPlayer = require("scripts.character.brain.brain_player")
-local Area = require("scripts.Area.area")
+local Area = require("scripts.area.area")
 local TOUCH = hash("touch")
 
 ---@class GameInput

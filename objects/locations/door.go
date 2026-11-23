@@ -1,4 +1,0 @@
----
---- Created by Koladik
---- DateTime: 23.11.2026 14:20
----
