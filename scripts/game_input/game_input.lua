@@ -50,7 +50,7 @@ function GameInput:on_input(action_id, action)
     if action_id ~= TOUCH or not action.pressed then return end
     if action.screen_x == nil or action.screen_y == nil then return end
 
-    local area, hit = self:pick(action.screen_x, action.screen_y)
+    local area = self:pick(action.screen_x, action.screen_y)
     if area then
         self.picked:emit(area)
     end
