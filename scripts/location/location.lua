@@ -33,6 +33,7 @@ end
 ---@param component string
 ---@param available_meshes table<hash, table>
 function Location:init_doors(hierarchy, component, available_meshes)
+    doors = {}
     local door_id = go.get_id("/door_1")
     if not go.exists(door_id) or go.get_parent(door_id) ~= self.id then return end
 
@@ -44,6 +45,7 @@ function Location:init_doors(hierarchy, component, available_meshes)
     ---local area = DoorArea:create(go.get_id("/door_area"))
     ---self.door = Door:create(self, "door_1", area)
     ---area.door = self.door
+    return doors
 end
 
 --- Show far walls and any corners adjacent to a visible wall.
