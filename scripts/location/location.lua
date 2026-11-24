@@ -18,13 +18,12 @@ local WALL_NAMES = {
 ---@private
 ---@param hierarchy GLBHierarchy
 ---@param component string
----@param available_meshes table<hash, table>
-function Location:init_walls(hierarchy, component, available_meshes)
+function Location:init_walls(hierarchy, component)
     local walls = {}
     for _, name in ipairs(WALL_NAMES) do
         local node = hierarchy:find_node(name)
-        local meshes = node and hierarchy:collect_meshes(node, available_meshes) or {}
-        self.walls[name] = Wall:create(self.id, component, meshes)
+        local meshes = node and hierarchy:collect_meshes(node) or {}
+        walls[name] = Wall:create(self.id, component, meshes)
     end
     return walls
 end
@@ -80,10 +79,10 @@ function Location:create(id, hierarchy, component)
     ---@type Location
     local obj = setmetatable({}, self)
     obj.id = id
-    local available_meshes = model.get_mesh_aabb(self.model_url)
     obj.model_url = msg.url(nil, id, component)
-    self.walls = obj:init_walls(hierarchy, component, available_meshes)
-    self.doors = obj:init_doors(hierarchy, component, available_meshes)
+    local available_meshes = model.get_mesh_aabb(obj.model_url)
+    obj.walls = obj:init_walls(hierarchy, component)
+    obj.doors = obj:init_doors(hierarchy, component, available_meshes)
     return obj
 end
 

@@ -41,14 +41,13 @@ function GLBHierarchy:find_node(query)
 end
 
 ---@param node table|string
----@param available_meshes table<hash, table> Actual meshes from model.get_mesh_aabb().
 ---@return hash[]
-function GLBHierarchy:collect_meshes(node, available_meshes)
+function GLBHierarchy:collect_meshes(node)
     local meshes, seen = {}, {}
-    self:walk(function(_, name)
+    self:walk(function(_, name, children)
+        if children then return end
         local mesh = hash(name)
-        -- Empty groups have no corresponding mesh in the model.
-        if available_meshes[mesh] ~= nil and not seen[mesh] then
+        if not seen[mesh] then
             meshes[#meshes + 1] = mesh
             seen[mesh] = true
         end

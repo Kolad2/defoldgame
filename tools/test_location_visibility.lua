@@ -73,7 +73,7 @@ end
 for _, name in ipairs({"down_left", "down_right", "top_left", "top_right"}) do
     group("wall_" .. name, {"corner_" .. name})
 end
-wall_nodes[1].wall_down[#wall_nodes[1].wall_down + 1] = {details = {"extra_beam", "empty_marker"}}
+wall_nodes[1].wall_down[#wall_nodes[1].wall_down + 1] = {details = {"extra_beam", "extra_beam", {empty_marker = {}}}}
 mesh_bounds.extra_beam = {}
 
 local hierarchy = GLBHierarchy:create(scene)
