@@ -7,7 +7,7 @@ function init(self)
     local scene_data, scene_error = sys.load_resource("/assets/locations/bar/bar.hierarchy.json")
     assert(scene_data, scene_error)
     local hierarchy = GLBHierarchy:from_json(scene_data)
-    self.location = Location:create(go.get_id("/location"), hierarchy)
+    self.location = Location:create(go.get_id("/location/location"), hierarchy)
 
     -- Calculate initial visibility once; update explicitly when the camera changes.
     local component = msg.url(Game.camera.camera_url)

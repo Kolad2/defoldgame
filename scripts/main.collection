@@ -3,19 +3,9 @@ instances {
   id: "game"
   prototype: "/scripts/main.go"
 }
-instances {
+collection_instances {
   id: "location"
-  prototype: "/objects/locations/location.go"
-  children: "door_1"
-}
-instances {
-  id: "door_1"
-  prototype: "/objects/locations/door/door.go"
-  children: "door_area"
-}
-instances {
-  id: "door_area"
-  prototype: "/objects/locations/door/door_area.go"
+  collection: "/objects/locations/location.collection"
 }
 instances {
   id: "character"
