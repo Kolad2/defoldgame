@@ -2,8 +2,8 @@ type: COLLISION_OBJECT_TYPE_STATIC
 mass: 0.0
 friction: 0.0
 restitution: 0.0
-group: "door"
-mask: "interaction"
+group: "interaction"
+mask: "door"
 embedded_collision_shape {
   shapes {
     shape_type: TYPE_MESH

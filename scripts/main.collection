@@ -10,12 +10,12 @@ instances {
 }
 instances {
   id: "door_1"
-  prototype: "/objects/locations/door.go"
+  prototype: "/objects/locations/door/door.go"
   children: "door_area"
 }
 instances {
   id: "door_area"
-  prototype: "/objects/locations/door_area.go"
+  prototype: "/objects/locations/door/door_area.go"
 }
 instances {
   id: "character"

@@ -31,7 +31,7 @@ end
 ---@param screen_x number
 ---@param screen_y number
 ---@return Area|nil area
----@return bullet3d.world.cast_result|nil hit
+---@return message.physics.ray_cast_response|nil hit
 function GameInput:pick(screen_x, screen_y)
     local cam = msg.url(self.game.camera.camera_url)
     local from = camera.screen_to_world(

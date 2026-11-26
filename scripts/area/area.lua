@@ -1,8 +1,10 @@
 local dict = require("scripts.tools.dict.init")
 
 local registry = dict:create()
+local INTERACTION_GROUPS = { hash("interaction") }
 
 ---@class Area
+---@field parent any
 ---@field id hash Game object containing the area's collision object.
 local Area = {}
 Area.__index = Area
@@ -16,16 +18,13 @@ end
 ---@param from vector3 Ray start in world coordinates.
 ---@param to vector3 Ray end in world coordinates.
 ---@return Area|nil area
----@return bullet3d.world.cast_result|nil hit
+---@return message.physics.ray_cast_response|nil hit
 function Area:find_first(from, to)
-    local world = bullet3d.get_world()
-    if not world then return nil end
+    local hit = physics.raycast(from, to, INTERACTION_GROUPS)
+    if not hit then return nil end
 
-    for _, hit in ipairs(bullet3d.world.cast_ray(world, from, to - from)) do
-        local id = bullet3d.get_gameobject_id(hit.object)
-        local area = id and self:get_by_id(id)
-        if area then return area end
-    end
+    local area = self:get_by_id(hit.id)
+    if area then return area end
 
     return nil
 end
@@ -37,6 +36,7 @@ function Area:create(id)
     ---@type Area
     local obj = setmetatable({}, self)
     obj.id = id
+    obj.parent = nil
     registry:set(id, obj)
     return obj
 end

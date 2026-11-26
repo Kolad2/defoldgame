@@ -5,7 +5,7 @@ local DoorArea = require("scripts.location.door_area")
 ---@class Location
 ---@field id hash
 ---@field walls table<string, Wall>
----@field door Door|nil
+---@field doors table<Door>
 ---@field private model_url url
 local Location = {}
 Location.__index = Location
@@ -33,7 +33,7 @@ end
 ---@param component string
 ---@param available_meshes table<hash, table>
 function Location:init_doors(hierarchy, component, available_meshes)
-    doors = {}
+    local doors = {}
     local door_id = go.get_id("/door_1")
     if not go.exists(door_id) or go.get_parent(door_id) ~= self.id then return end
 

@@ -1,0 +1,14 @@
+name: "location"
+instances {
+  id: "location"
+  prototype: "/objects/locations/location.go"
+  position {
+    x: -0.36973244
+    y: 0.13520066
+  }
+}
+collection_instances {
+  id: "door"
+  collection: "/objects/locations/door/door.collection"
+}
+scale_along_z: 0

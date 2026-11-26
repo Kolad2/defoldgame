@@ -1,0 +1,11 @@
+name: "door"
+instances {
+  id: "door"
+  prototype: "/objects/locations/door/door.go"
+  children: "door_area"
+}
+instances {
+  id: "door_area"
+  prototype: "/objects/locations/door/door_area.go"
+}
+scale_along_z: 0
