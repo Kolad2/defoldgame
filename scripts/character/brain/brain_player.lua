@@ -31,5 +31,6 @@ end
 ---@param area Area
 function BrainPlayer:_on_player_picked(area)
     assert(area.parent, "Picked Area has no parent: " .. tostring(area.id))
+    getmetatable(area.parent)
 end
 return BrainPlayer
