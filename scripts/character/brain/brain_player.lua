@@ -16,6 +16,9 @@ function BrainPlayer:create(input)
     obj.input.clicked:subscribe(function(x, y)
         obj:_on_game_input_ground(x, y)
     end)
+    obj.input.picked:subscribe(function(area)
+        obj:_on_player_picked(area)
+    end)
     return obj
 end
 
@@ -25,4 +28,8 @@ function BrainPlayer:_on_game_input_ground(x, y)
     self:set_order(OrderMovePoint:create(vmath.vector3(x, 0, y)))
 end
 
+---@param area Area
+function BrainPlayer:_on_player_picked(area)
+    assert(area.parent, "Picked Area has no parent: " .. tostring(area.id))
+end
 return BrainPlayer

@@ -53,6 +53,7 @@ function GameInput:on_input(action_id, action)
     local area = self:pick(action.screen_x, action.screen_y)
     if area then
         self.picked:emit(area)
+        return
     end
 
     local point = self.game.camera.to_world(action.screen_x, action.screen_y)

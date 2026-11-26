@@ -3,8 +3,8 @@ instances {
   id: "location"
   prototype: "/objects/locations/location.go"
   position {
-    x: -0.36973244
-    y: 0.13520066
+    x: 0.0
+    y: 0.0
   }
 }
 collection_instances {
