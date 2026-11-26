@@ -37,13 +37,13 @@ function Location:init_doors(hierarchy, component, available_meshes)
     local door_id = go.get_id("/location/door/door")
     if not go.exists(door_id) then return doors end
 
-    local area = hash("area")
-    if available_meshes[area] ~= nil then
-        model.set_mesh_enabled(self.model_url, area, false)
+    local area_mesh = hash("area")
+    if available_meshes[area_mesh] ~= nil then
+        model.set_mesh_enabled(self.model_url, area_mesh, false)
     end
 
-    ---local area = DoorArea:create(go.get_id("/location/door/door_area"))
-    ---self.door = Door:create(self, "door_1", area)
+    local area = DoorArea:create(go.get_id("/location/door/door_area"))
+    self.door = Door:create(self, "door_1", area)
     ---area.door = self.door
     return doors
 end

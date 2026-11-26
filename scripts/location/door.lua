@@ -18,6 +18,7 @@ function Door:create(location, name, area)
     obj.location = location
     obj.name = name
     obj.area = area
+    area.parent = obj
     obj.clicked = Observer:create()
     return obj
 end
