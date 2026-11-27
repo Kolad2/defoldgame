@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Match the engine's MT_StaticRelease ABI in every profile, including Debug.
 set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
 set(DETOUR_EXTENSION_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH
-    "Defold extension directory receiving the library and public headers")
+    "Defold extension directory receiving game libraries and editor artifacts")
 set(DETOUR_BUILD_CACHE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.build/dependencies" CACHE PATH
     "Downloaded Defold SDK headers and editor compiler cache")
 set(RECAST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/source/recastnavigation")
@@ -38,6 +38,8 @@ endif()
 
 add_library(recast STATIC ${RECAST_SOURCES})
 target_compile_features(recast PUBLIC cxx_std_11)
+# Read headers directly from each upstream module's Include directory.
+# PUBLIC propagates this list to detour_runtime and navmesh_editor via linking.
 target_include_directories(recast PUBLIC ${RECAST_INCLUDE_DIRS})
 set_target_properties(recast PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -114,8 +116,8 @@ if(DETOUR_BUILD_EDITOR)
     )
 endif()
 
-# Always stage with copy-if-different: rebuilding after changing a public header
-# or switching profiles refreshes the extension even when the archive is cached.
+# Always stage with copy-if-different so switching profiles refreshes the
+# packaged binaries. Public headers remain in their original module directories.
 add_custom_target(detour_package ALL
     COMMAND "${CMAKE_COMMAND}"
         "-DRECAST_ROOT=${RECAST_ROOT}"
@@ -128,7 +130,7 @@ add_custom_target(detour_package ALL
         ${package_editor_arguments}
         -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PackageDetour.cmake"
     DEPENDS ${package_dependencies}
-    COMMENT "Publishing separate core/runtime libraries, headers and enabled editor artifacts"
+    COMMENT "Publishing separate core/runtime libraries and enabled editor artifacts"
     VERBATIM
 )
 

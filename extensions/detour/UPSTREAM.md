@@ -11,22 +11,24 @@ The complete `Recast`, `Detour`, `DetourCrowd`, `DetourTileCache` and
 including their original `Include`, `Source` and `CMakeLists.txt` files.
 These upstream files are unmodified. The upstream zlib license is preserved
 at `source/recastnavigation/License.txt` and in source headers. The
-packaged extension also carries the license in `include/recastnavigation-license.txt`.
+packaged extension also carries the license in `recastnavigation-license.txt`.
 
 This extension's CMake project compiles all five modules into one static `recast`
-library. Build `detour_package` to copy the archive into `lib/<platform>/`
-and the original public headers into `include/`. See
+library. Build `detour_package` to copy the archive into `lib/<platform>/`.
+Public headers stay in each module's original `Include` directory; CMake passes
+their directory list to the core library, runtime and editor targets. See
 [the CMake/CLion workflow](BUILDING.md).
 CMake separately builds the integration files under `source/runtime` into
 `detour_runtime.lib` (`libdetour_runtime.a` on Android). That archive contains
 no upstream objects. Defold links both archives and compiles only the empty
 `src/extension.cpp` placeholder required by Extender. All implementations are
 outside the extension's `src` tree, so they cannot be compiled twice.
-Keep packaged headers and libraries in sync; rebuild the runtime archive with
+Keep original sources and packaged libraries in sync; rebuild the runtime archive with
 the matching Defold SDK when upgrading the engine. `lib/<platform>/defold-sdk.txt`
 records the SDK revision used for packaging.
-The manifest's `upload/extensions/detour/include` path is relative to the server job
-directory. If renaming or relocating the extension folder, update it too.
+The manifest has no additional include paths: the server compiles only the empty
+placeholder and links the prebuilt archives. The upstream headers stay local to
+the CMake build, alongside their original sources.
 RecastDemo, its UI dependencies and upstream tests are not runtime libraries
 and are not included in the extension.
 

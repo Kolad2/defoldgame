@@ -5,5 +5,5 @@ platforms:
         context:
             symbols: ["NavMeshPreviewResource", "NavMeshPreviewComponent"]
             libs: ["detour_runtime", "recast"]
-            includes:
-                - "upload/extensions/detour/include"
+# All C++ implementation is precompiled by CMake. The empty src/extension.cpp
+# needs no Recast headers; their include directories are defined in CMakeLists.txt.

@@ -150,7 +150,8 @@ there is no second compilation of upstream sources for the editor. The two
 processes still have separate copies of the statically linked machine code.
 
 On Windows, `detour_package` builds and publishes the core library, separate
-`detour_runtime.lib`, headers, JNI DLL, and Java JAR together. The runtime
+`detour_runtime.lib`, JNI DLL, and Java JAR together. Headers are read directly
+from the five original upstream `Include` directories through CMake. The runtime
 archive contains the Lua API and game resource/component code, compiled
 against the installed Defold SDK; it contains neither upstream nor JNI objects.
 Clojure UI code stays as source, loaded by the

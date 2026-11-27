@@ -15,7 +15,7 @@ extensions/detour/
     runtime/             # Lua API, debug adapter, component -> detour_runtime.lib
     editor/              # JNI and Java -> navmesh_editor.dll / navmesh-editor.jar
   src/extension.cpp      # empty source required by Defold's build service
-  include/               # packaged upstream public headers
+  recastnavigation-license.txt
   lib/x86_64-win32/
     recast.lib
     detour_runtime.lib
@@ -26,6 +26,22 @@ extensions/detour/
 `recast.lib` contains only original upstream code. The runtime archive contains
 only Defold integration; it does not embed the core archive. The editor DLL
 links the same `recast` target as the game and does not link `detour_runtime`.
+
+Headers are read directly from the five upstream directories:
+
+```text
+source/recastnavigation/Recast/Include
+source/recastnavigation/Detour/Include
+source/recastnavigation/DetourCrowd/Include
+source/recastnavigation/DetourTileCache/Include
+source/recastnavigation/DebugUtils/Include
+```
+
+`RECAST_INCLUDE_DIRS` collects this list in `CMakeLists.txt` and is published by
+`target_include_directories(recast PUBLIC ...)`. The runtime and JNI targets
+inherit it through `target_link_libraries(... recast)`. There is no flattened
+header directory or header-copy step. Defold's server links the prebuilt archives;
+the empty `src/extension.cpp` does not need these headers or manifest include paths.
 
 On Windows:
 
@@ -42,7 +58,6 @@ On Windows:
 3. Select the **detour_package** target and your Release profile, then
    use **Build** (`Ctrl+F9`). This builds and publishes
    `extensions/detour/lib/x86_64-win32/recast.lib` and `detour_runtime.lib`,
-   the headers in `extensions/detour/include`,
    the upstream license, `extensions/detour/plugins/lib/x86_64-win32/navmesh_editor.dll`,
    and `extensions/detour/plugins/share/navmesh-editor.jar`.
 4. Restart Defold after replacing a loaded editor DLL/JAR, then build/run your
@@ -123,8 +138,8 @@ build the archive for any additional target before bundling it in Defold.
 The original sources and module CMake files remain unchanged in
 `extensions/detour/source/recastnavigation`. Keep Defold-specific changes in
 `extensions/detour/source/runtime` or `extensions/detour/source/editor`; do not patch upstream files.
-Packaged headers are copies of the upstream originals. Commit the updated
-archives, headers and editor artifacts together so users of the extension can build
+The original public headers stay in their module directories. Commit the updated
+upstream tree, archives and editor artifacts together so users of the extension can build
 games without CMake.
 The `extensions` folder is exported through Defold's `library.include_dirs`.
 Defold compiles only the empty `src/extension.cpp` placeholder and links both
