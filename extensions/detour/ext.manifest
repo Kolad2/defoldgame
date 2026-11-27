@@ -1,0 +1,9 @@
+# C++ symbol in your extension
+name: "detour"
+platforms:
+    common:
+        context:
+            symbols: ["NavMeshPreviewResource", "NavMeshPreviewComponent"]
+            libs: ["detour_runtime", "recast"]
+            includes:
+                - "upload/detour/include"

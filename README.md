@@ -21,12 +21,14 @@ Happy Defolding!
 
 Локация подключена через `objects/locations/location.go` →
 `assets/locations/bar/bar.model` → `bar.glb`. Размер пола — 12 × 10,
-высота стен — 3.2. В `bar.model` назначены три материала исходной модели:
-пол, деревянный каркас и стены. Текстуры нового экспорта лежат в
-`assets/locations/bar/textures`: `T_WoodTrim_BaseColor.png` для пола и
-`room_timber_basecolor.png` для каркаса. `bar.material` использует стандартное
+высота стен — 3.2. Пол — одна плоскость на Y = 0. В `bar.model` назначены
+три материала исходной модели: `Floor_Wood_Stylized_256` для пола,
+`Timber - Basecolor 256` для деревянного каркаса и `Walls - Blockout` для стен.
+Текстуры нового экспорта лежат в `assets/locations/bar/textures`:
+`Floor_Wood_01-top-down-256x256-seamless-v2.png` для пола и
+`room_timber_basecolor_256.png` для каркаса. `bar.material` использует стандартное
 освещение Defold и повторение текстур по UV. Для стен назначен
-`walls.material` с цветом `tint` и шейдером `solid.fp` без текстуры.
+`walls.material` с цветом `tint` (0.48, 0.52, 0.56, 1) из GLB и шейдером `solid.fp` без текстуры.
 Плоскость `doors/door_1/area` служит разметкой области взаимодействия;
 её отрисовка отключается в конструкторе `Location`.
 Компонент `door_1` использует `objects/locations/door_area.collisionobject`:

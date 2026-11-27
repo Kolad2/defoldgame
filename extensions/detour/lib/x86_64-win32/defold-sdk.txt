@@ -1,0 +1,2 @@
+Defold engine SDK: ee283d4dad9fa451dd6399d83602e1dc25133681
+Rebuild detour_runtime when upgrading Defold.
