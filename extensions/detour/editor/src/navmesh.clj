@@ -113,13 +113,13 @@
    :show-surface show-surface :show-edges show-edges :surface-opacity surface-opacity
    :height-offset height-offset :x-ray x-ray})
 
-(g/defnk produce-errors [_node-id geometry surface-opacity height-offset color]
+(g/defnk produce-errors [geometry surface-opacity height-offset color]
   (when-let [message (or (:error geometry)
                         (when-not (<= 0 surface-opacity 1) "Surface Opacity must be between 0 and 1.")
                         (when-not (Double/isFinite (double height-offset)) "Height Offset must be finite.")
                         (when-not (and (= 4 (count color)) (every? #(<= 0 % 1) color))
                           "Color must contain four values between 0 and 1."))]
-    (g/error-fatal _node-id :source message)))
+    (g/error-fatal message)))
 
 (defn- build-navmesh [resource deps {:keys [config source material xray-material]}]
   (with-open [stream (io/input-stream source)]
@@ -148,8 +148,8 @@
            (project/resource-setter ctx self old new
              [:resource :source-resource] [:sha256 :source-sha256])))
     (dynamic edit-type (g/constantly {:type resource/Resource :ext "bin"}))
-    (dynamic error (g/fnk [_node-id geometry]
-                     (when-let [message (:error geometry)] (g/error-fatal _node-id :source message)))))
+    (dynamic error (g/fnk [geometry]
+                     (when-let [message (:error geometry)] (g/error-fatal message)))))
   (property color types/Color (default (:color defaults)))
   (property show-surface g/Bool (default true))
   (property show-edges g/Bool (default true))

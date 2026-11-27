@@ -149,8 +149,8 @@
     (set (fn [ctx self old new]
            (project/resource-setter ctx self old new [:resource :source-resource] [:scene :source-scene])))
     (dynamic edit-type (g/constantly {:type resource/Resource :ext "model"}))
-    (dynamic error (g/fnk [_node-id geometry]
-                     (when-let [text (:error geometry)] (g/error-warning _node-id :source text)))))
+    (dynamic error (g/fnk [geometry]
+                     (when-let [text (:error geometry)] (g/error-warning text)))))
   (property output g/Str (default "")
     (dynamic tooltip (g/constantly "Project path /.../mesh.bin. Empty saves beside a .navmeshconstructor resource. For an inline component, specify Output. Replaced only when you press Bake.")))
   (property cell-size g/Num (default 0.2)
