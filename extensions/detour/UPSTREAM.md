@@ -25,7 +25,7 @@ outside the extension's `src` tree, so they cannot be compiled twice.
 Keep packaged headers and libraries in sync; rebuild the runtime archive with
 the matching Defold SDK when upgrading the engine. `lib/<platform>/defold-sdk.txt`
 records the SDK revision used for packaging.
-The manifest's `upload/detour/include` path is relative to the server job
+The manifest's `upload/extensions/detour/include` path is relative to the server job
 directory. If renaming or relocating the extension folder, update it too.
 RecastDemo, its UI dependencies and upstream tests are not runtime libraries
 and are not included in the extension.
@@ -51,7 +51,7 @@ automatically exposed to Lua. Existing query/crowd methods remain available,
 with `get_debug_lines` added for runtime visualization.
 
 When updating, replace all five modules from the same upstream release in
-`detour/source/recastnavigation`, update the commit here, rebuild `detour_package`
+`extensions/detour/source/recastnavigation`, update the commit here, rebuild `detour_package`
 for each supported platform, and check the example's existing `assets/navmesh.bin`
 before accepting the update. The Windows package target rebuilds the editor
 DLL and JAR as needed; Android packaging updates only the Android game library.

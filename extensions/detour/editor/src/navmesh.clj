@@ -184,8 +184,8 @@
 
 (defn- load-navmesh [{:keys [resolve-resource-fn]} {:keys [node-id source-value owner-resource]}]
   (concat
-    [(g/set-property node-id :material (resolve-resource-fn owner-resource "/detour/resources/navmesh.material"))
-     (g/set-property node-id :xray-material (resolve-resource-fn owner-resource "/detour/resources/navmesh_xray.material"))
+    [(g/set-property node-id :material (resolve-resource-fn owner-resource "/extensions/detour/resources/navmesh.material"))
+     (g/set-property node-id :xray-material (resolve-resource-fn owner-resource "/extensions/detour/resources/navmesh_xray.material"))
      (g/set-property node-id :source (when (seq (:source source-value))
                                      (resolve-resource-fn owner-resource (:source source-value))))]
     (for [key [:color :show-surface :show-edges :surface-opacity :height-offset :x-ray]]
@@ -202,4 +202,4 @@
       :icon "icons/32/Icons_22-Model.png" :category "Components"
       :view-types [:scene :text] :tags #{:component}
       :tag-opts {:component {:transform-properties #{:position :rotation}}}
-      :template "/detour/editor/resources/templates/template.navmesh")))
+      :template "/extensions/detour/editor/resources/templates/template.navmesh")))

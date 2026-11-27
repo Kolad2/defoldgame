@@ -1,7 +1,7 @@
 name: "navmesh"
 tags: "navmesh"
-vertex_program: "/detour/resources/navmesh.vp"
-fragment_program: "/detour/resources/navmesh.fp"
+vertex_program: "/extensions/detour/resources/navmesh.vp"
+fragment_program: "/extensions/detour/resources/navmesh.fp"
 vertex_space: VERTEX_SPACE_LOCAL
 vertex_constants {
   name: "mtx_worldviewproj"

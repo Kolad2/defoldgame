@@ -2,7 +2,7 @@
 # Only the small official headers archive is required to create a static library.
 set(defold_default "$ENV{DEFOLD_HOME}")
 if(NOT defold_default)
-    set(defold_default "${CMAKE_CURRENT_SOURCE_DIR}/../../../Defold")
+    set(defold_default "${CMAKE_CURRENT_SOURCE_DIR}/../../../../Defold")
 endif()
 set(DETOUR_DEFOLD_DIR "${defold_default}" CACHE PATH "Installed Defold directory (config and packages)")
 set(DETOUR_DEFOLD_SDK_SHA "" CACHE STRING "Override engine SHA for the native SDK; empty uses installed Defold")

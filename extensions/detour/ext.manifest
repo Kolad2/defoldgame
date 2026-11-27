@@ -6,4 +6,4 @@ platforms:
             symbols: ["NavMeshPreviewResource", "NavMeshPreviewComponent"]
             libs: ["detour_runtime", "recast"]
             includes:
-                - "upload/detour/include"
+                - "upload/extensions/detour/include"

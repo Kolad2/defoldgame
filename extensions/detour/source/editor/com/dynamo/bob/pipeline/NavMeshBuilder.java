@@ -24,14 +24,14 @@ public class NavMeshBuilder extends Builder {
         if (!source.exists()) throw new CompileExceptionError(input, 0, "NavMesh source not found: " + path);
         Task.TaskBuilder task = Task.newBuilder(this).setName(params.name()).addInput(input).addInput(source)
             .addOutput(input.changeExt(params.outExt()));
-        createSubTask(project.getResource("/detour/resources/navmesh.material"), task);
-        createSubTask(project.getResource("/detour/resources/navmesh_xray.material"), task);
+        createSubTask(project.getResource("/extensions/detour/resources/navmesh.material"), task);
+        createSubTask(project.getResource("/extensions/detour/resources/navmesh_xray.material"), task);
         return task.build();
     }
     @Override public void build(Task task) throws IOException, CompileExceptionError {
         try {
             task.output(0).setContent(NavMeshResource.compile(task.input(0).getContent(), task.input(1).getContent(),
-                "/detour/resources/navmesh.materialc", "/detour/resources/navmesh_xray.materialc"));
+                "/extensions/detour/resources/navmesh.materialc", "/extensions/detour/resources/navmesh_xray.materialc"));
         } catch (Exception e) {
             throw new CompileExceptionError(task.input(0), 0, e.getMessage());
         }

@@ -109,7 +109,7 @@ local settings = query:get_debug_settings()
 
 Debug rendering uses Color, Show Surface, Show Edges, Surface Opacity,
 Height Offset and X Ray from the component resource. The example render script
-calls `detour.debug` with its world camera. A custom renderer must initialize
+calls `extensions.detour.debug` with its world camera. A custom renderer must initialize
 and draw this module's predicates and declare the two materials in its `.render`
 file; see `example/navmesh.render` and the main README. `render.draw_debug3d()`
 alone cannot draw this component's filled surfaces.
@@ -143,7 +143,7 @@ DLL and JAR are not runtime dependencies of the exported game.
 - `debug.lua`, `resources/navmesh*.material`: render integration and materials.
 
 The root CMake project builds the unmodified upstream sources in
-`detour/source/recastnavigation` into a single static `recast` archive. The game
+`extensions/detour/source/recastnavigation` into a single static `recast` archive. The game
 package receives that archive, and the editor JNI DLL links the very same
 CMake target. Only the editor's own JNI adapters are compiled for the DLL;
 there is no second compilation of upstream sources for the editor. The two
@@ -198,7 +198,7 @@ particular, the native JNI adapter is not part of `recast.lib` or `detour_runtim
 The Java resource builder is required while compiling `.navmesh` resources;
 its output is the `.navmeshc` containing mesh bytes and settings, not Java code.
 
-The native `.navmeshc` resource/component handler under `detour/source/runtime`
+The native `.navmeshc` resource/component handler under `extensions/detour/source/runtime`
 does ship in the custom engine through `detour_runtime.lib` because collections
 reference that component. Its runtime loader and GPU renderer have no Java,
 Clojure or JNI dependency. The example archive includes `.navmeshc`, render

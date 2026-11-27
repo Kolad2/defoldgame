@@ -256,4 +256,4 @@
                          (if (seq (:source data)) [(resolve-proj-path-fn owner (:source data))] []))
       :icon "icons/32/Icons_22-Model.png" :category "Components" :view-types [:scene :text] :tags #{:component}
       :tag-opts {:component {:transform-properties #{:position :rotation}}}
-      :template "/detour/editor/resources/templates/template.navmeshconstructor")))
+      :template "/extensions/detour/editor/resources/templates/template.navmeshconstructor")))

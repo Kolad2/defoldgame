@@ -17,7 +17,7 @@ public final class NavMeshPreview {
             }
         }
         throw new IllegalStateException("NavMesh editor library is missing for this host: " + filename +
-            ". Build detour/plugins/lib/<host-platform> and restart Defold.");
+            ". Build extensions/detour/plugins/lib/<host-platform> and restart Defold.");
     }
     public static float[][] read(byte[] data) { load(); return readNative(data); }
     private static native float[][] readNative(byte[] data);

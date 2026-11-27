@@ -1,12 +1,12 @@
 # Build detour with CMake / CLion
 
 Open this `detour` folder in CLion. You can also open the parent Defold project,
-whose root CMakeLists only calls `add_subdirectory(detour)`. The CMake project builds
+whose root CMakeLists only calls `add_subdirectory(extensions/detour)`. The CMake project builds
 all C++ code: the five upstream modules, Lua bindings, runtime component and
 editor JNI bridge. It also builds the Java plugin JAR. The outputs stay separate:
 
 ```text
-detour/
+extensions/detour/
   CMakeLists.txt         # standalone build definition
   cmake/                 # SDK, editor and packaging helpers
   .build/                # ignored build products and downloaded dependencies
@@ -41,21 +41,21 @@ On Windows:
    such as `.build/cmake/windows-release`. Presets are optional.
 3. Select the **detour_package** target and your Release profile, then
    use **Build** (`Ctrl+F9`). This builds and publishes
-   `detour/lib/x86_64-win32/recast.lib` and `detour_runtime.lib`,
-   the headers in `detour/include`,
-   the upstream license, `detour/plugins/lib/x86_64-win32/navmesh_editor.dll`,
-   and `detour/plugins/share/navmesh-editor.jar`.
+   `extensions/detour/lib/x86_64-win32/recast.lib` and `detour_runtime.lib`,
+   the headers in `extensions/detour/include`,
+   the upstream license, `extensions/detour/plugins/lib/x86_64-win32/navmesh_editor.dll`,
+   and `extensions/detour/plugins/share/navmesh-editor.jar`.
 4. Restart Defold after replacing a loaded editor DLL/JAR, then build/run your
    game in Defold or with your project's launcher.
 
 `DETOUR_BUILD_EDITOR` defaults to enabled on Windows. The installed Defold is found
-through `DEFOLD_HOME`, or `../../../Defold` relative to this extension folder
+through `DEFOLD_HOME`, or `../../../../Defold` relative to this extension folder
 (the layout used by this example). On another machine or in another directory,
 set `DEFOLD_HOME` or the `DETOUR_DEFOLD_DIR` CMake option to the installation.
 These installation paths belong in local CLion settings or an ignored
 `CMakeUserPresets.json`, not in the shared presets.
 The runtime uses the installed engine's exact SDK revision. CMake downloads only
-the official `defoldsdk_headers.zip` into ignored `detour/.build/dependencies/defold-sdk/<engine-sha>`;
+the official `defoldsdk_headers.zip` into ignored `extensions/detour/.build/dependencies/defold-sdk/<engine-sha>`;
 no engine libraries or SDK tools are needed to create the static archive.
 For offline builds, set `DETOUR_DEFOLD_SDK_ROOT` to an extracted `defoldsdk`
 directory containing `sdk/include/dmsdk/sdk.h`. `DETOUR_DEFOLD_SDK_SHA` can
@@ -64,7 +64,7 @@ Rebuild **detour_package** when upgrading Defold: the runtime archive is tied
 to the SDK API/ABI, whereas the pure core archive has no Defold dependency.
 JNI headers and a Java runtime are found in the installed CLion's JBR, or in
 `JAVA_HOME` / `DETOUR_JNI_HOME` (JDK/JBR 21+). The first configure downloads the
-pinned Eclipse Java compiler 3.43.0 into ignored `detour/.build/dependencies/cmake-tools`; for offline
+pinned Eclipse Java compiler 3.43.0 into ignored `extensions/detour/.build/dependencies/cmake-tools`; for offline
 builds, set `DETOUR_ECJ_JAR` to an existing copy. Its SHA-256 is verified. The
 compiler reads the installed editor's Java API and emits Java 21 classes.
 Build tools and editor dependencies are not packaged into the game.
@@ -111,7 +111,7 @@ cmake --build --preset windows-release
 For Android arm64, install an Android NDK compatible with your Defold version,
 set `ANDROID_NDK_HOME` to its directory, and reload the parent project's presets. The
 **android-arm64-release** profile then becomes available and produces
-`detour/lib/arm64-android/librecast.a` and `libdetour_runtime.a` through the same
+`extensions/detour/lib/arm64-android/librecast.a` and `libdetour_runtime.a` through the same
 **detour_package** target.
 This profile disables the host editor build and uses the NDK toolchain,
 `arm64-v8a`, API 21, and position-independent code. Build the Windows profile
@@ -121,12 +121,12 @@ cannot build the Android archive. Windows x64 is the supplied prebuilt platform;
 build the archive for any additional target before bundling it in Defold.
 
 The original sources and module CMake files remain unchanged in
-`detour/source/recastnavigation`. Keep Defold-specific changes in
-`detour/source/runtime` or `detour/source/editor`; do not patch upstream files.
+`extensions/detour/source/recastnavigation`. Keep Defold-specific changes in
+`extensions/detour/source/runtime` or `extensions/detour/source/editor`; do not patch upstream files.
 Packaged headers are copies of the upstream originals. Commit the updated
 archives, headers and editor artifacts together so users of the extension can build
 games without CMake.
-Only the `detour` folder is exported through Defold's `library.include_dirs`.
+The `extensions` folder is exported through Defold's `library.include_dirs`.
 Defold compiles only the empty `src/extension.cpp` placeholder and links both
 precompiled game libraries. `source` is outside its automatic native-source
 collection, so none of the implementations is recompiled on the server.
@@ -143,14 +143,16 @@ See [the editor instructions](editor/README.md).
 
 ## Copying to another project
 
-Copy the complete `detour` folder, including `CMakeLists.txt` and `cmake/`.
+Copy the complete `detour` folder into `extensions/detour` in the destination
+Defold project, including `CMakeLists.txt` and `cmake/`.
 Generated `.build/` and local `.idea/` directories are not needed.
 Open the copied folder in CLion and configure the installed Defold/JDK paths.
 The default `detour_package` destination is the copied extension itself; it
 does not reference the original project.
 
-To build from a parent project, add `add_subdirectory(detour)` to its CMakeLists.
+To build from a parent project, add `add_subdirectory(extensions/detour)` to its CMakeLists.
 Presets and CLion profiles belong to that parent project or your local IDE setup;
 they are not required when copying or building this extension standalone.
-Keep the extension directory named `detour` when moving it into another Defold
-project: its existing manifest and Lua resource paths use that name.
+Keep the project-relative location `extensions/detour`. Templates, materials,
+Bob resource builders and the manifest use this fixed path. Require the Lua
+render helper as `extensions.detour.debug`; the native Lua API remains `detour`.
