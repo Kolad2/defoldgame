@@ -58,8 +58,8 @@ inline int getDirOffsetY(int dir)
 	return offset[dir&0x03];
 }
 
-static const int MAX_VERTS_PER_POLY = 6;	// TODO: use the DT_VERTS_PER_POLYGON
-static const int MAX_REM_EDGES = 48;		// TODO: make this an expression.
+static const int MAX_VERTS_PER_POLY = 6;
+static const int MAX_REM_EDGES = 48;
 
 
 
@@ -744,7 +744,7 @@ static unsigned char getCornerHeight(dtTileCacheLayer& layer,
 }
 
 
-// TODO: move this somewhere else, once the layer meshing is done.
+
 dtStatus dtBuildTileCacheContours(dtTileCacheAlloc* alloc,
 								  dtTileCacheLayer& layer,
 								  const int walkableClimb, 	const float maxError,
@@ -1652,7 +1652,7 @@ static dtStatus removeVertex(dtTileCachePolyMesh& mesh, const unsigned short rem
 	int ntris = triangulate(nhole, tverts, tpoly, tris);
 	if (ntris < 0)
 	{
-		// TODO: issue warning!
+
 		ntris = -ntris;
 	}
 	
@@ -1763,7 +1763,7 @@ dtStatus dtBuildTileCachePolyMesh(dtTileCacheAlloc* alloc,
 		maxVertsPerCont = dtMax(maxVertsPerCont, lcset.conts[i].nverts);
 	}
 
-	// TODO: warn about too many vertices?
+
 	
 	mesh.nvp = MAX_VERTS_PER_POLY;
 	
@@ -1834,7 +1834,7 @@ dtStatus dtBuildTileCachePolyMesh(dtTileCacheAlloc* alloc,
 		int ntris = triangulate(cont.nverts, cont.verts, &indices[0], &tris[0]);
 		if (ntris <= 0)
 		{
-			// TODO: issue warning!
+
 			ntris = -ntris;
 		}
 		

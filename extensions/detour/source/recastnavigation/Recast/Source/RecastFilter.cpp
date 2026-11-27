@@ -68,7 +68,7 @@ void rcFilterLedgeSpans(rcContext* context, const int walkableHeight, const int 
 
 	const int xSize = heightfield.width;
 	const int zSize = heightfield.height;
-	const int MAX_HEIGHT = 0xffff; // TODO (graham): Move this to a more visible constant and update usages.
+	const int MAX_HEIGHT = 0xffff;
 	
 	// Mark border spans.
 	for (int z = 0; z < zSize; ++z)

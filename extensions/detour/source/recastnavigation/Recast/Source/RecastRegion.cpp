@@ -1559,9 +1559,9 @@ bool rcBuildRegions(rcContext* ctx, rcCompactHeightfield& chf,
 	unsigned short regionId = 1;
 	unsigned short level = (chf.maxDistance+1) & ~1;
 
-	// TODO: Figure better formula, expandIters defines how much the 
-	// watershed "overflows" and simplifies the regions. Tying it to
-	// agent radius was usually good indication how greedy it could be.
+
+
+
 //	const int expandIters = 4 + walkableRadius * 2;
 	const int expandIters = 8;
 

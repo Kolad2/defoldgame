@@ -11,7 +11,7 @@ extensions/detour/
   cmake/                 # SDK, editor and packaging helpers
   .build/                # ignored build products and downloaded dependencies
   source/
-    recastnavigation/    # unchanged upstream modules -> recast.lib
+    recastnavigation/    # upstream library modules -> recast.lib
     runtime/             # Lua API, debug adapter, component -> detour_runtime.lib
     editor/              # JNI and Java -> navmesh_editor.dll / navmesh-editor.jar
   src/extension.cpp      # empty source required by Defold's build service
@@ -23,7 +23,7 @@ extensions/detour/
   plugins/               # packaged editor DLL/JAR
 ```
 
-`recast.lib` contains only original upstream code. The runtime archive contains
+`recast.lib` contains only upstream library code. The runtime archive contains
 only Defold integration; it does not embed the core archive. The editor DLL
 links the same `recast` target as the game and does not link `detour_runtime`.
 
@@ -100,7 +100,7 @@ CRT directives before publishing; `/MD` or `/MTd` archives are rejected.
 The runtime integration keeps assertions and
 SDK logging enabled even in Release: the current SDK's `NDEBUG` logging macros
 use GNU syntax unsupported by MSVC. Release code remains optimized; upstream
-sources and SDK headers are not patched. Debug and Release publish to the same paths:
+implementations and SDK headers are not patched. Debug and Release publish to the same paths:
 the last `detour_package` build is the version used by Defold. Do not publish
 two profiles simultaneously. The parent presets use `build/cmake/<preset>/`;
 for standalone builds, use `.build/cmake/<profile>/` inside this folder.
@@ -135,8 +135,10 @@ It requires CMake/Ninja and the NDK on the build host; the Windows compiler
 cannot build the Android archive. Windows x64 is the supplied prebuilt platform;
 build the archive for any additional target before bundling it in Defold.
 
-The original sources and module CMake files remain unchanged in
-`extensions/detour/source/recastnavigation`. Keep Defold-specific changes in
+The upstream sources and module CMake files are stored in
+`extensions/detour/source/recastnavigation`. Only maintenance task comments
+have been removed; implementation and upstream build rules are unchanged.
+See [the source modification notice](UPSTREAM.md). Keep Defold-specific changes in
 `extensions/detour/source/runtime` or `extensions/detour/source/editor`; do not patch upstream files.
 The original public headers stay in their module directories. Commit the updated
 upstream tree, archives and editor artifacts together so users of the extension can build

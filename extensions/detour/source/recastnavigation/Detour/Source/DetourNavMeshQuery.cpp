@@ -1812,7 +1812,7 @@ dtStatus dtNavMeshQuery::findStraightPath(const float* startPos, const float* en
 	
 	dtStatus stat = 0;
 	
-	// TODO: Should this be callers responsibility?
+
 	float closestStartPos[3];
 	if (dtStatusFailed(closestPointOnPolyBoundary(path[0], startPos, closestStartPos)))
 		return DT_FAILURE | DT_INVALID_PARAM;
@@ -2187,7 +2187,7 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 						continue;
 					
 					// Skip the link if it is too far from search constraint.
-					// TODO: Maybe should use getPortalPoints(), but this one is way faster.
+
 					const float* vj = &verts[j*3];
 					const float* vi = &verts[i*3];
 					float tseg;

@@ -142,7 +142,7 @@ DLL and JAR are not runtime dependencies of the exported game.
 - `source/runtime/navmesh_data.h`: compiled-resource and MSET validation/loader.
 - `debug.lua`, `resources/navmesh*.material`: render integration and materials.
 
-The root CMake project builds the unmodified upstream sources in
+The root CMake project builds the upstream library sources in
 `extensions/detour/source/recastnavigation` into a single static `recast` archive. The game
 package receives that archive, and the editor JNI DLL links the very same
 CMake target. Only the editor's own JNI adapters are compiled for the DLL;

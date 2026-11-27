@@ -10,7 +10,7 @@ set(DETOUR_BUILD_CACHE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.build/dependencies" CAC
     "Downloaded Defold SDK headers and editor compiler cache")
 set(RECAST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/source/recastnavigation")
 
-# This archive contains only unmodified upstream modules, never Defold/JNI code.
+# This archive contains only upstream library modules, never Defold/JNI code.
 set(RECAST_MODULES Recast Detour DetourCrowd DetourTileCache DebugUtils)
 set(RECAST_SOURCES)
 set(RECAST_INCLUDE_DIRS)

@@ -237,7 +237,7 @@ bool dtClosestHeightPointTriangle(const float* p, const float* a, const float* b
 /// All points are projected onto the xz-plane, so the y-values are ignored.
 bool dtPointInPolygon(const float* pt, const float* verts, const int nverts)
 {
-	// TODO: Replace pnpoly with triArea2D tests?
+
 	int i, j;
 	bool c = false;
 	for (i = 0, j = nverts-1; i < nverts; j = i++)
@@ -254,7 +254,7 @@ bool dtPointInPolygon(const float* pt, const float* verts, const int nverts)
 bool dtDistancePtPolyEdgesSqr(const float* pt, const float* verts, const int nverts,
 							  float* ed, float* et)
 {
-	// TODO: Replace pnpoly with triArea2D tests?
+
 	int i, j;
 	bool c = false;
 	for (i = 0, j = nverts-1; i < nverts; j = i++)

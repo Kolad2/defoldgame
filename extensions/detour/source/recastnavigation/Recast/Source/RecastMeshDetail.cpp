@@ -862,7 +862,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 			nverts++;
 			
 			// Create new triangulation.
-			// TODO: Incremental add instead of full rebuild.
+
 			edges.clear();
 			tris.clear();
 			delaunayHull(ctx, nverts, verts, nhull, hull, tris, edges);

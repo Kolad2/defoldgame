@@ -2,7 +2,7 @@ package com.defold.navmesh;
 
 import java.io.File;
 
-/** Editor bridge to the unchanged upstream Detour/DebugUtils libraries. */
+/** Editor bridge to the upstream Detour/DebugUtils libraries. */
 public final class NavMeshPreview {
     private static boolean loaded;
     static synchronized void load() {

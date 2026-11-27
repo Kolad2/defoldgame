@@ -28,9 +28,9 @@
 //#define DT_POLYREF64 1
 
 #ifdef DT_POLYREF64
-// TODO: figure out a multiplatform version of uint64_t
-// - maybe: https://code.google.com/p/msinttypes/
-// - or: http://www.azillionmonkeys.com/qed/pstdint.h
+
+
+
 #include <stdint.h>
 #endif
 
@@ -643,7 +643,7 @@ private:
 	void unconnectLinks(dtMeshTile* tile, dtMeshTile* target);
 	
 
-	// TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
+
 	
 	/// Queries polygons within a tile.
 	int queryPolygonsInTile(const dtMeshTile* tile, const float* qmin, const float* qmax,
@@ -656,7 +656,7 @@ private:
 	/// Returns closest point on polygon.
 	void closestPointOnPoly(dtPolyRef ref, const float* pos, float* closest, bool* posOverPoly) const;
 	
-	dtNavMeshParams m_params;			///< Current initialization params. TODO: do not store this info twice.
+	dtNavMeshParams m_params;			///< Current initialization params.
 	float m_orig[3];					///< Origin of the tile (0,0)
 	float m_tileWidth, m_tileHeight;	///< Dimensions of each tile.
 	int m_maxTiles;						///< Max number of tiles.

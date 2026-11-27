@@ -268,7 +268,7 @@ static unsigned char classifyOffMeshPoint(const float* pt, const float* bmin, co
 	return 0xff;	
 }
 
-// TODO: Better error handling.
+
 
 /// @par
 /// 

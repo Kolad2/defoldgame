@@ -944,7 +944,7 @@ bool rcRasterizeTriangle(rcContext* context,
 /// @ingroup recast
 /// @param[in,out]	context				The build context to use during the operation.
 /// @param[in]		verts				The vertices. [(x, y, z) * @p nv]
-/// @param[in]		numVerts			The number of vertices. (unused) TODO (graham): Remove in next major release
+/// @param[in]		numVerts			The number of vertices. (unused)
 /// @param[in]		tris				The triangle indices. [(vertA, vertB, vertC) * @p nt]
 /// @param[in]		triAreaIDs			The area id's of the triangles. [Limit: <= #RC_WALKABLE_AREA] [Size: @p nt]
 /// @param[in]		numTris				The number of triangles.
@@ -965,7 +965,7 @@ bool rcRasterizeTriangles(rcContext* context,
 /// @ingroup recast
 /// @param[in,out]	context				The build context to use during the operation.
 /// @param[in]		verts				The vertices. [(x, y, z) * @p nv]
-/// @param[in]		numVerts			The number of vertices. (unused) TODO (graham): Remove in next major release
+/// @param[in]		numVerts			The number of vertices. (unused)
 /// @param[in]		tris				The triangle indices. [(vertA, vertB, vertC) * @p nt]
 /// @param[in]		triAreaIDs			The area id's of the triangles. [Limit: <= #RC_WALKABLE_AREA] [Size: @p nt]
 /// @param[in]		numTris				The number of triangles.
@@ -1221,7 +1221,7 @@ inline int rcGetDirOffsetX(int direction)
 	return offset[direction & 0x03];
 }
 
-// TODO (graham): Rename this to rcGetDirOffsetZ
+
 /// Gets the standard height (z-axis) offset for the specified direction.
 /// @param[in]		direction		The direction. [Limits: 0 <= value < 4]
 /// @return The height offset to apply to the current cell position to move in the direction.

@@ -40,7 +40,7 @@ class dtPathQueue
 		/// State.
 		dtStatus status;
 		int keepAlive;
-		const dtQueryFilter* filter; ///< TODO: This is potentially dangerous!
+		const dtQueryFilter* filter;
 	};
 	
 	static const int MAX_QUEUE = 8;

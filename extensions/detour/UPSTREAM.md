@@ -9,7 +9,10 @@ Commit: `6dc1667f580357e8a2154c28b7867bea7e8ad3a7`
 The complete `Recast`, `Detour`, `DetourCrowd`, `DetourTileCache` and
 `DebugUtils` module directories are copied into `source/recastnavigation/`,
 including their original `Include`, `Source` and `CMakeLists.txt` files.
-These upstream files are unmodified. The upstream zlib license is preserved
+This is a modified source distribution: upstream maintenance task comments
+and their continuation lines have been removed. Executable code, unrelated
+API documentation and upstream CMake files are unchanged.
+The upstream zlib license is preserved
 at `source/recastnavigation/License.txt` and in source headers. The
 packaged extension also carries the license in `recastnavigation-license.txt`.
 

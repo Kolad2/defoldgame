@@ -414,7 +414,7 @@ void rcMarkConvexPolyArea(rcContext* ctx, const float* verts, const int nverts,
 	if (maxz >= chf.height) maxz = chf.height-1;	
 	
 	
-	// TODO: Optimize.
+
 	for (int z = minz; z <= maxz; ++z)
 	{
 		for (int x = minx; x <= maxx; ++x)
