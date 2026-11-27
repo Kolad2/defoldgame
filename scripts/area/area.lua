@@ -20,7 +20,9 @@ end
 ---@return Area|nil area
 ---@return message.physics.ray_cast_response|nil hit
 function Area:find_first(from, to)
-    local hit = physics.raycast(from, to, INTERACTION_GROUPS)
+    -- TODO: Re-enable raycast after adding a floor collider that creates the physics world.
+    -- local hit = physics.raycast(from, to, INTERACTION_GROUPS)
+    local hit = nil
     if not hit then return nil end
 
     local area = self:get_by_id(hit.id)
