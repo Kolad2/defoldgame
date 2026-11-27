@@ -19,14 +19,10 @@ function vmath.dot(a, b) return a.x * b.x + a.y * b.y + a.z * b.z end
 hash = function(value) return value end
 msg = {url = function(_, id, component) return id .. "#" .. component end}
 local transforms, visible, changes = {}, {}, 0
-local mesh_bounds = {floor = {}, area = {}}
+local mesh_bounds = {floor = {}}
 go = {
     get_id = function(path) return path end,
-    exists = function(id) return id == "/door_1" end,
-    get_parent = function(id)
-        assert(id == "/door_1")
-        return "bar"
-    end,
+    exists = function() error("Paused door interaction must not query door objects") end,
     update_world_transform = function() end,
     get_world_transform = function(id) return transforms[id] or 0 end,
 }
@@ -58,11 +54,8 @@ model = {
 local Location = require("scripts.location.location")
 local Wall = require("scripts.location.wall")
 local GLBHierarchy = require("scripts.tools.glb_hierarchy")
-local Door = require("scripts.location.door")
-local DoorArea = require("scripts.location.door_area")
-local Area = require("scripts.area.area")
 local wall_nodes = {}
-local scene = {{room = {"floor", {walls = wall_nodes}, {doors = {{door_1 = {"area"}}}}}}}
+local scene = {{room = {"floor", {walls = wall_nodes}, {door_bones = {"door_1", "door_2"}}}}}
 local function group(name, meshes)
     wall_nodes[#wall_nodes + 1] = {[name] = meshes}
     for _, mesh in ipairs(meshes) do mesh_bounds[mesh] = {} end
@@ -77,12 +70,11 @@ wall_nodes[1].wall_down[#wall_nodes[1].wall_down + 1] = {details = {"extra_beam"
 mesh_bounds.extra_beam = {}
 
 local hierarchy = GLBHierarchy:create(scene)
+model.get_mesh_aabb("bar#room")
 local location = Location:create("bar", hierarchy)
-assert(getmetatable(location.door) == Door, "Location initializes its door")
-assert(location.door.location == location and location.door.name == "door_1")
-assert(getmetatable(location.door.area) == DoorArea)
-assert(location.door.area.id == "/door_area" and location.door.area.door == location.door)
-assert(Area:get_by_id("/door_area") == location.door.area, "Door area is registered for picking")
+assert(location.door == nil and location.doors == nil, "Door initialization is paused")
+assert(not package.loaded["scripts.location.door"] and not package.loaded["scripts.location.door_area"]
+    and not package.loaded["scripts.area.area"], "Paused interaction modules are not loaded")
 local count = 0
 for _ in pairs(location.walls) do count = count + 1 end
 assert(count == 8, "Exactly eight wall groups")
@@ -93,7 +85,7 @@ for _, wall in pairs(location.walls) do
 end
 assert(location.walls.floor == nil, "Only wall groups belong to the dictionary")
 for key in pairs(location) do
-    assert(key == "id" or key == "model_url" or key == "walls" or key == "door", "Unexpected retained state: " .. key)
+    assert(key == "id" or key == "model_url" or key == "walls", "Unexpected retained state: " .. key)
 end
 local state = visible["bar#room"]
 local function check(name, expected) assert(state[name] == expected, name) end
@@ -105,7 +97,6 @@ local function check_corners(s)
     assert(s.corner_top_right == (s.wall_top or s.wall_right), "top-right corner")
 end
 
-check("area", false)
 for _, direction in ipairs({{-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1}}) do
     location:update_visibility(vmath.vector3(direction[1], direction[2], direction[3]))
     check("wall_down", direction[3] > 0)
@@ -118,7 +109,6 @@ for _, direction in ipairs({{-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1}})
     check_corners()
     check("extra_beam", state.wall_down)
     check("floor", true)
-    check("area", false)
 end
 
 -- Manual operations affect only the requested meshes, without remembered masks.
@@ -134,13 +124,14 @@ for _, wall in pairs(location.walls) do wall:set_visible(false) end
 for _, wall in pairs(location.walls) do
     for _, mesh in ipairs(wall.meshes) do check(mesh, false) end
 end
-check("floor", true); check("area", false)
+check("floor", true)
 location.walls.wall_top:set_visible(true)
 check("wall_top", true)
 location:update_visibility(vmath.vector3(-1, -1, -1))
 check_corners()
 
 transforms.rotated = math.pi / 2
+model.get_mesh_aabb("rotated#room")
 local rotated = Location:create("rotated", hierarchy)
 assert(rotated.door == nil, "Other locations do not claim this door")
 rotated:update_visibility(vmath.vector3(-1, -1, -1))
@@ -153,7 +144,7 @@ local previous_changes = changes
 location:update_visibility(vmath.vector3())
 assert(changes == previous_changes, "Zero direction preserves visibility")
 
-go.exists = function() return false end
+model.get_mesh_aabb("empty#room")
 local empty = Location:create("empty", GLBHierarchy:create({}))
 assert(empty.door == nil, "A scene without a door is supported")
 count = 0

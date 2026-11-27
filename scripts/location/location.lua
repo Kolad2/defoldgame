@@ -1,11 +1,12 @@
 local Wall = require("scripts.location.wall")
-local Door = require("scripts.location.door")
-local DoorArea = require("scripts.location.door_area")
+-- Area meshes were removed from bar.glb; door bones are reserved for future use.
+-- local Door = require("scripts.location.door")
+-- local DoorArea = require("scripts.location.door_area")
 
 ---@class Location
 ---@field id hash
 ---@field walls table<string, Wall>
----@field doors table<Door>
+-- ---@field doors table<Door>
 ---@field private model_url url
 local Location = {}
 Location.__index = Location
@@ -28,6 +29,7 @@ function Location:init_walls(hierarchy, component)
     return walls
 end
 
+--[[ Door initialization is paused until interaction is implemented using the bones.
 ---@private
 ---@param hierarchy GLBHierarchy
 ---@param component string
@@ -47,6 +49,7 @@ function Location:init_doors(hierarchy, component, available_meshes)
     ---area.door = self.door
     return doors
 end
+]]
 
 --- Show far walls and any corners adjacent to a visible wall.
 ---@param camera_direction vector3 Direction FROM the camera INTO the scene.
@@ -82,9 +85,9 @@ function Location:create(id, hierarchy, component)
     local obj = setmetatable({}, self)
     obj.id = id
     obj.model_url = msg.url(nil, id, component)
-    local available_meshes = model.get_mesh_aabb(obj.model_url)
+    -- local available_meshes = model.get_mesh_aabb(obj.model_url)
     obj.walls = obj:init_walls(hierarchy, component)
-    obj.doors = obj:init_doors(hierarchy, component, available_meshes)
+    -- obj.doors = obj:init_doors(hierarchy, component, available_meshes)
     return obj
 end
 

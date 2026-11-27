@@ -7,8 +7,9 @@ instances {
     y: 0.0
   }
 }
-collection_instances {
-  id: "door"
-  collection: "/objects/locations/door/door.collection"
-}
+# Door/Area interaction is paused: the updated GLB no longer contains the area mesh.
+# collection_instances {
+#   id: "door"
+#   collection: "/objects/locations/door/door.collection"
+# }
 scale_along_z: 0
