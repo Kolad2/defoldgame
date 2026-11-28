@@ -7,6 +7,10 @@ instances {
     y: 0.0
   }
 }
+collection_instances {
+  id: "ground"
+  collection: "/objects/locations/ground/ground.collection"
+}
 # Door/Area interaction is paused: the updated GLB no longer contains the area mesh.
 # collection_instances {
 #   id: "door"

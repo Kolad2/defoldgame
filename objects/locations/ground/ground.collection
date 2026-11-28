@@ -1,0 +1,11 @@
+name: "ground"
+instances {
+  id: "ground"
+  prototype: "/objects/locations/ground/ground.go"
+  children: "ground_area"
+}
+instances {
+  id: "ground_area"
+  prototype: "/objects/locations/ground/ground_area.go"
+}
+scale_along_z: 0
