@@ -6,7 +6,7 @@ local Wall = require("scripts.world.location.wall")
 ---@class Location
 ---@field id hash
 ---@field walls table<string, Wall>
--- ---@field doors table<Door>
+---@field doors table<Door>
 ---@field private model_url url
 local Location = {}
 Location.__index = Location
@@ -29,27 +29,26 @@ function Location:init_walls(hierarchy, component)
     return walls
 end
 
---[[ Door initialization is paused until interaction is implemented using the bones.
+
 ---@private
 ---@param hierarchy GLBHierarchy
 ---@param component string
----@param available_meshes table<hash, table>
-function Location:init_doors(hierarchy, component, available_meshes)
+function Location:init_doors(hierarchy, component)
     local doors = {}
-    local door_id = go.get_id("/location/door/door")
-    if not go.exists(door_id) then return doors end
-
-    local area_mesh = hash("area")
-    if available_meshes[area_mesh] ~= nil then
-        model.set_mesh_enabled(self.model_url, area_mesh, false)
-    end
-
-    local area = DoorArea:create(go.get_id("/location/door/door_area"))
-    self.door = Door:create(self, "door_1", area)
+    --local door_id = go.get_id("/location/door/door")
+    --if not go.exists(door_id) then return doors end
+    --
+    --local area_mesh = hash("area")
+    --if available_meshes[area_mesh] ~= nil then
+    --    model.set_mesh_enabled(self.model_url, area_mesh, false)
+    --end
+    --
+    --local area = DoorArea:create(go.get_id("/location/door/door_area"))
+    --self.door = Door:create(self, "door_1", area)
     ---area.door = self.door
     return doors
 end
-]]
+
 
 --- Show far walls and any corners adjacent to a visible wall.
 ---@param camera_direction vector3 Direction FROM the camera INTO the scene.
@@ -87,7 +86,7 @@ function Location:create(id, hierarchy, component)
     obj.model_url = msg.url(nil, id, component)
     -- local available_meshes = model.get_mesh_aabb(obj.model_url)
     obj.walls = obj:init_walls(hierarchy, component)
-    -- obj.doors = obj:init_doors(hierarchy, component, available_meshes)
+    obj.doors = obj:init_doors(hierarchy, component)
     return obj
 end
 

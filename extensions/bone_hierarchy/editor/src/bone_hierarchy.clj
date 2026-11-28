@@ -114,7 +114,8 @@
 ;; Child transforms are relative to their nearest parent joint.
 (defn skeleton-plan [skeleton prefix taken-ids]
   (let [bones (vec (:bones skeleton))
-        prefix (if (string/blank? prefix) "" (str (valid-id prefix "bone") "_"))]
+        ;; Preserve path separators already present in the owning GO's ID.
+        prefix (if (string/blank? prefix) "" (str (string/replace prefix #"[#:\s\\]" "_") "/"))]
     (when (empty? bones)
       (throw (ex-info "Source has no skeleton. Export an armature/skin to the GLB." {})))
     (let [used (atom #{})
@@ -165,7 +166,7 @@
             (= 1 (count selected)) (first selected)
             (= 1 (count exact)) (first exact)
             (= 1 (count candidates)) (first candidates)
-            (seq candidates) (throw (ex-info "Select exactly one BoneHierarchy component inside the target game object." {}))))))))
+            (seq candidates) (throw (ex-info "Select exactly one authoring component inside the target game object." {}))))))))
 
 (defn- target-context [{:keys [app-view active-collection selected-node-ids]} node-id]
   (let [active-collection (or active-collection (when app-view (g/node-value app-view :active-resource-node)))
@@ -177,7 +178,7 @@
         target (or selected-target (when (and parent coll) {:collection coll :parent parent :component component}))]
     (when target
       (when (or (g/override? (g/now) (:collection target)) (g/override? (g/now) (:parent target)))
-        (throw (ex-info "Open the original collection to create bone game objects." {})))
+        (throw (ex-info "Open the original collection to create child game objects." {})))
       target)))
 
 ;; All graph steps are committed together, including parent links and status.
@@ -225,7 +226,7 @@
     (dynamic edit-type (g/constantly {:type resource/Resource :ext "glb"})))
   (property id-prefix g/Str (default "")
     (dynamic read-only? (g/fnk [_node-id] (g/override? (g/now) _node-id)))
-    (dynamic tooltip (g/constantly "Prefix for bone IDs. Empty uses the owning GO's ID. Configure Source and Id Prefix in the original .go when using referenced game objects.")))
+    (dynamic tooltip (g/constantly "Bone IDs use prefix/bone_name. Empty uses the owning GO's ID, preserving its path. Configure Source and Id Prefix in the original .go when using referenced game objects.")))
   (property status g/Str (value produce-status) (dynamic read-only? (g/constantly true)))
   (property result g/Str (default "") (dynamic read-only? (g/constantly true)))
   (property create g/Bool
@@ -252,7 +253,8 @@
           component-pose (if component (g/node-value component :pose) pose/default)
           prefix (g/node-value node-id :id-prefix)
           prefix (if (string/blank? prefix) (g/node-value parent :id) prefix)
-          plan (skeleton-plan skeleton prefix (g/node-value collection :ids))
+          plan (skeleton-plan skeleton prefix (concat (g/node-value collection :ids)
+                                                     (keys (g/node-value collection :go-inst-ids))))
           plan (mapv #(if (:parent %) % (update % :pose pose/pre-multiply component-pose)) plan)]
       (g/transact
         (concat (g/operation-label "Create BoneHierarchy")

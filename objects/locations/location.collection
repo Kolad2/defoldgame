@@ -2,18 +2,20 @@ name: "location"
 instances {
   id: "location"
   prototype: "/objects/locations/location.go"
-  position {
-    x: 0.0
-    y: 0.0
-  }
+  children: "doors"
 }
 collection_instances {
   id: "ground"
   collection: "/objects/locations/ground/ground.collection"
 }
-# Door/Area interaction is paused: the updated GLB no longer contains the area mesh.
-# collection_instances {
-#   id: "door"
-#   collection: "/objects/locations/door/door.collection"
-# }
 scale_along_z: 0
+embedded_instances {
+  id: "doors"
+  data: "embedded_components {\n"
+  "  id: \"bonehierarchy\"\n"
+  "  type: \"bonehierarchy\"\n"
+  "  data: \"{\\\"source\\\":\\\"\\\\/assets\\\\/locations\\\\/bar\\\\/bar.glb\\\",\\\"id-prefix\\\":\\\"\\\"}\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
