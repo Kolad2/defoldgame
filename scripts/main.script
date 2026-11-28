@@ -1,5 +1,5 @@
 local Game = require("scripts.game.game")
-local Location = require("scripts.location.location")
+local Location = require("scripts.world.location.location")
 local GLBHierarchy = require("scripts.tools.glb_hierarchy")
 
 function init(self)

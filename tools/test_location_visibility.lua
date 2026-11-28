@@ -51,8 +51,8 @@ model = {
     end,
 }
 
-local Location = require("scripts.location.location")
-local Wall = require("scripts.location.wall")
+local Location = require("scripts.world.location.location")
+local Wall = require("scripts.world.location.wall")
 local GLBHierarchy = require("scripts.tools.glb_hierarchy")
 local wall_nodes = {}
 local scene = {{room = {"floor", {walls = wall_nodes}, {door_bones = {"door_1", "door_2"}}}}}
@@ -73,7 +73,7 @@ local hierarchy = GLBHierarchy:create(scene)
 model.get_mesh_aabb("bar#room")
 local location = Location:create("bar", hierarchy)
 assert(location.door == nil and location.doors == nil, "Door initialization is paused")
-assert(not package.loaded["scripts.location.door"] and not package.loaded["scripts.location.door_area"]
+assert(not package.loaded["scripts.world.location.door"] and not package.loaded["scripts.world.location.door_area"]
     and not package.loaded["scripts.area.area"], "Paused interaction modules are not loaded")
 local count = 0
 for _ in pairs(location.walls) do count = count + 1 end

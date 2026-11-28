@@ -1,7 +1,7 @@
-local Wall = require("scripts.location.wall")
+local Wall = require("scripts.world.location.wall")
 -- Area meshes were removed from bar.glb; door bones are reserved for future use.
--- local Door = require("scripts.location.door")
--- local DoorArea = require("scripts.location.door_area")
+-- local Door = require("scripts.world.location.door")
+-- local DoorArea = require("scripts.world.location.door_area")
 
 ---@class Location
 ---@field id hash
