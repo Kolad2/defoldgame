@@ -7,12 +7,15 @@ mask: "door"
 embedded_collision_shape {
   shapes {
     shape_type: TYPE_MESH
-    position { x: -1.5 y: 1.1 z: -5.0 }
-    rotation { x: 0.70710678 y: 0.0 z: 0.0 w: 0.70710678 }
+    position {
+    }
+    rotation {
+    }
     index: 0
     count: 0
     id: "area"
-    mesh_scene: "/assets/locations/bar/bar.glb"
+    mesh_scene: "/assets/models/door/area.glb"
     mesh_name: "area"
+    mesh_index: 0
   }
 }

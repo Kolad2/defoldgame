@@ -1,1 +1,4 @@
-components { id: "room" component: "/assets/locations/bar/bar.model" }
+components {
+  id: "room"
+  component: "/objects/locations/bar.model"
+}

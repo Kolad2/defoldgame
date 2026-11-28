@@ -1,0 +1,22 @@
+mesh: "/assets/locations/bar/bar.glb"
+skeleton: "/assets/locations/bar/bar.glb"
+materials {
+  name: "Floor_Wood_Stylized_256"
+  material: "/assets/locations/bar/bar.material"
+  textures {
+    sampler: "tex0"
+    texture: "/assets/locations/bar/textures/Floor_Wood_01-top-down-256x256-seamless-v2.png"
+  }
+}
+materials {
+  name: "Timber - Basecolor 256"
+  material: "/assets/locations/bar/bar.material"
+  textures {
+    sampler: "tex0"
+    texture: "/assets/locations/bar/textures/room_timber_basecolor_256.png"
+  }
+}
+materials {
+  name: "Walls - Blockout"
+  material: "/assets/locations/bar/walls.material"
+}
